@@ -1,10 +1,78 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{091FE7F1-DBB4-49BD-B4FA-3FFD92B0C34B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{841B148B-A103-4F26-9C98-05F565C2F04F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Domain", "src\Ferre.LinkManager.Domain\Ferre.LinkManager.Domain.csproj", "{7C51B381-C007-40BD-83DE-584BED7E7E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Application", "src\Ferre.LinkManager.Application\Ferre.LinkManager.Application.csproj", "{50087B48-948C-4569-A717-D1A5527FF8A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Infrastructure", "src\Ferre.LinkManager.Infrastructure\Ferre.LinkManager.Infrastructure.csproj", "{2B0BF690-348D-429A-8C95-0E537EFDB0FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Api", "src\Ferre.LinkManager.Api\Ferre.LinkManager.Api.csproj", "{26B857E7-F761-4608-A0EE-04AD4A198A8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Domain.Tests", "tests\Ferre.LinkManager.Domain.Tests\Ferre.LinkManager.Domain.Tests.csproj", "{8427FAE8-FF6F-4EC1-8274-E608D79A0830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Application.Tests", "tests\Ferre.LinkManager.Application.Tests\Ferre.LinkManager.Application.Tests.csproj", "{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Api.IntegrationTests", "tests\Ferre.LinkManager.Api.IntegrationTests\Ferre.LinkManager.Api.IntegrationTests.csproj", "{295814BC-5A2B-47CC-A3C9-C6865AB614C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.ArchitectureTests", "tests\Ferre.LinkManager.ArchitectureTests\Ferre.LinkManager.ArchitectureTests.csproj", "{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C51B381-C007-40BD-83DE-584BED7E7E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C51B381-C007-40BD-83DE-584BED7E7E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C51B381-C007-40BD-83DE-584BED7E7E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C51B381-C007-40BD-83DE-584BED7E7E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50087B48-948C-4569-A717-D1A5527FF8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50087B48-948C-4569-A717-D1A5527FF8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50087B48-948C-4569-A717-D1A5527FF8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50087B48-948C-4569-A717-D1A5527FF8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0BF690-348D-429A-8C95-0E537EFDB0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0BF690-348D-429A-8C95-0E537EFDB0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0BF690-348D-429A-8C95-0E537EFDB0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0BF690-348D-429A-8C95-0E537EFDB0FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26B857E7-F761-4608-A0EE-04AD4A198A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26B857E7-F761-4608-A0EE-04AD4A198A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26B857E7-F761-4608-A0EE-04AD4A198A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26B857E7-F761-4608-A0EE-04AD4A198A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8427FAE8-FF6F-4EC1-8274-E608D79A0830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8427FAE8-FF6F-4EC1-8274-E608D79A0830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8427FAE8-FF6F-4EC1-8274-E608D79A0830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8427FAE8-FF6F-4EC1-8274-E608D79A0830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295814BC-5A2B-47CC-A3C9-C6865AB614C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295814BC-5A2B-47CC-A3C9-C6865AB614C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295814BC-5A2B-47CC-A3C9-C6865AB614C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295814BC-5A2B-47CC-A3C9-C6865AB614C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7C51B381-C007-40BD-83DE-584BED7E7E2F} = {091FE7F1-DBB4-49BD-B4FA-3FFD92B0C34B}
+		{50087B48-948C-4569-A717-D1A5527FF8A5} = {091FE7F1-DBB4-49BD-B4FA-3FFD92B0C34B}
+		{2B0BF690-348D-429A-8C95-0E537EFDB0FB} = {091FE7F1-DBB4-49BD-B4FA-3FFD92B0C34B}
+		{26B857E7-F761-4608-A0EE-04AD4A198A8A} = {091FE7F1-DBB4-49BD-B4FA-3FFD92B0C34B}
+		{8427FAE8-FF6F-4EC1-8274-E608D79A0830} = {841B148B-A103-4F26-9C98-05F565C2F04F}
+		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E} = {841B148B-A103-4F26-9C98-05F565C2F04F}
+		{295814BC-5A2B-47CC-A3C9-C6865AB614C0} = {841B148B-A103-4F26-9C98-05F565C2F04F}
+		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5} = {841B148B-A103-4F26-9C98-05F565C2F04F}
 	EndGlobalSection
 EndGlobal

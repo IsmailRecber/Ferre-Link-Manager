@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ferre.LinkManager.Application\Ferre.LinkManager.Application.csproj" />
+    <ProjectReference Include="..\Ferre.LinkManager.Infrastructure\Ferre.LinkManager.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
