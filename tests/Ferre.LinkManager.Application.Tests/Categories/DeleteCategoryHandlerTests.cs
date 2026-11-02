@@ -88,6 +88,12 @@ public class DeleteCategoryHandlerTests
     {
         public List<Link> Items { get; } = new();
 
+        public Task AddAsync(Link link, CancellationToken cancellationToken)
+        {
+            Items.Add(link);
+            return Task.CompletedTask;
+        }
+
         public Task<bool> AnyByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken) =>
             Task.FromResult(Items.Any(l => l.CategoryId == categoryId && !l.IsDeleted));
     }
