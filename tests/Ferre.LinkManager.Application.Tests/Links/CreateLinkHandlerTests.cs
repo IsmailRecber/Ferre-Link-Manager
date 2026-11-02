@@ -6,6 +6,7 @@ using Ferre.LinkManager.Application.Links.CreateLink;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Common;
 using Ferre.LinkManager.Domain.Links;
+using Ferre.LinkManager.Application.Tests.Fakes;
 using Xunit;
 
 namespace Ferre.LinkManager.Application.Tests.Links;
@@ -86,45 +87,5 @@ public class CreateLinkHandlerTests
         Assert.Equal(0, _unitOfWork.SaveCount);
     }
 
-    private sealed class FakeCategoryRepository : ICategoryRepository
-    {
-        public List<Category> Items { get; } = new();
-
-        public Task AddAsync(Category category, CancellationToken cancellationToken)
-        {
-            Items.Add(category);
-            return Task.CompletedTask;
-        }
-
-        public Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-            Task.FromResult(Items.FirstOrDefault(c => c.Id == id && !c.IsDeleted));
-
-        public Task<bool> ExistsByNameAsync(CategoryName name, CancellationToken cancellationToken) =>
-            Task.FromResult(Items.Any(c => c.Name == name));
-    }
-
-    private sealed class FakeLinkRepository : ILinkRepository
-    {
-        public List<Link> Items { get; } = new();
-
-        public Task AddAsync(Link link, CancellationToken cancellationToken)
-        {
-            Items.Add(link);
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> AnyByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken) =>
-            Task.FromResult(Items.Any(l => l.CategoryId == categoryId && !l.IsDeleted));
-    }
-
-    private sealed class FakeUnitOfWork : IUnitOfWork
-    {
-        public int SaveCount { get; private set; }
-
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            SaveCount++;
-            return Task.FromResult(1);
-        }
-    }
+   
 }

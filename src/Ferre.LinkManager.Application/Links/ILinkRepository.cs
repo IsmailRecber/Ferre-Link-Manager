@@ -6,5 +6,7 @@ public interface ILinkRepository
 {
     Task AddAsync(Link link, CancellationToken cancellationToken);
 
+    Task<Link?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
     Task<bool> AnyByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken);
 }
