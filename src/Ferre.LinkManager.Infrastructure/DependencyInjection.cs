@@ -1,6 +1,7 @@
 ﻿using Ferre.LinkManager.Application.Categories;
 using Ferre.LinkManager.Application.Common.Abstractions;
 using Ferre.LinkManager.Application.Links;
+using Ferre.LinkManager.Infrastructure.Events;
 using Ferre.LinkManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddScoped<IReadDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+
+        services.AddScoped<IEventPublisher, EventPublisher>();
 
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ILinkRepository, LinkRepository>();
