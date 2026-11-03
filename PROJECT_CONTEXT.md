@@ -304,7 +304,7 @@ Test projects:
 
 \- Ferre.LinkManager.ArchitectureTests
 
-
+\- Ferre.LinkManager.Infrastructure.Tests
 
 Frontend:
 

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Api.Integ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.ArchitectureTests", "tests\Ferre.LinkManager.ArchitectureTests\Ferre.LinkManager.ArchitectureTests.csproj", "{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferre.LinkManager.Infrastructure.Tests", "tests\Ferre.LinkManager.Infrastructure.Tests\Ferre.LinkManager.Infrastructure.Tests.csproj", "{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,5 +80,6 @@ Global
 		{D21BBEB6-2B2E-468C-BD6E-C1B2A498105E} = {841B148B-A103-4F26-9C98-05F565C2F04F}
 		{295814BC-5A2B-47CC-A3C9-C6865AB614C0} = {841B148B-A103-4F26-9C98-05F565C2F04F}
 		{F2C28F38-8D01-4A40-AE8E-CF6316A4A3D5} = {841B148B-A103-4F26-9C98-05F565C2F04F}
+		{19DF1064-CD36-4CBF-AFDB-488AEFCBEB3A} = {841B148B-A103-4F26-9C98-05F565C2F04F}
 	EndGlobalSection
 EndGlobal
