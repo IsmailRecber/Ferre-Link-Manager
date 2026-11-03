@@ -29,7 +29,7 @@ public sealed class GetMyLinksHandler
                 where link.IsActive && !link.IsDeleted
                       && category.IsActive && !category.IsDeleted
                       && link.RoleAccesses.Any(access => roles.Contains(access.RoleName))
-                orderby category.Name.Value, link.Title
+                orderby category.Name, link.Title
                 select new LinkDto(link.Id, link.Title, link.CategoryId, category.Name.Value))
             .AsNoTracking()
             .ToListAsync(cancellationToken);
