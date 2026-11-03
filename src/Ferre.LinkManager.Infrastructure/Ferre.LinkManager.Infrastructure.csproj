@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.33" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.33" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ferre.LinkManager.Application\Ferre.LinkManager.Application.csproj" />
     <ProjectReference Include="..\Ferre.LinkManager.Domain\Ferre.LinkManager.Domain.csproj" />
   </ItemGroup>
