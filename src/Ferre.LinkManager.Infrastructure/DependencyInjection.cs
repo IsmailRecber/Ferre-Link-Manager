@@ -1,4 +1,5 @@
-﻿using Ferre.LinkManager.Application.Categories;
+﻿using Ferre.LinkManager.Application.Audit;
+using Ferre.LinkManager.Application.Categories;
 using Ferre.LinkManager.Application.Common.Abstractions;
 using Ferre.LinkManager.Application.Links;
 using Ferre.LinkManager.Infrastructure.Events;
@@ -24,6 +25,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ILinkRepository, LinkRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
         return services;
     }

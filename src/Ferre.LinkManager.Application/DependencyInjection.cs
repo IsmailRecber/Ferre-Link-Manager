@@ -1,0 +1,39 @@
+﻿using Ferre.LinkManager.Application.Audit;
+using Ferre.LinkManager.Application.Categories.CreateCategory;
+using Ferre.LinkManager.Application.Categories.DeleteCategory;
+using Ferre.LinkManager.Application.Categories.UpdateCategory;
+using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Application.Links.CreateLink;
+using Ferre.LinkManager.Application.Links.DeleteLink;
+using Ferre.LinkManager.Application.Links.GetMyLinks;
+using Ferre.LinkManager.Application.Links.UpdateLink;
+using Ferre.LinkManager.Domain.Categories;
+using Ferre.LinkManager.Domain.Links;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Ferre.LinkManager.Application;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddScoped<CreateCategoryHandler>();
+        services.AddScoped<UpdateCategoryHandler>();
+        services.AddScoped<DeleteCategoryHandler>();
+
+        services.AddScoped<CreateLinkHandler>();
+        services.AddScoped<UpdateLinkHandler>();
+        services.AddScoped<DeleteLinkHandler>();
+        services.AddScoped<GetMyLinksHandler>();
+
+        // One class listens to several events, so each event type points to the same instance.
+        services.AddScoped<AuditEventHandler>();
+        services.AddScoped<IEventHandler<LinkCreated>>(sp => sp.GetRequiredService<AuditEventHandler>());
+        services.AddScoped<IEventHandler<LinkUpdated>>(sp => sp.GetRequiredService<AuditEventHandler>());
+        services.AddScoped<IEventHandler<LinkDeleted>>(sp => sp.GetRequiredService<AuditEventHandler>());
+        services.AddScoped<IEventHandler<CategoryCreated>>(sp => sp.GetRequiredService<AuditEventHandler>());
+        services.AddScoped<IEventHandler<CategoryDeleted>>(sp => sp.GetRequiredService<AuditEventHandler>());
+
+        return services;
+    }
+}

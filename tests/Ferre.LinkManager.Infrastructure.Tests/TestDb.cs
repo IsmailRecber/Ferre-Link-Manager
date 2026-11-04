@@ -6,27 +6,36 @@ namespace Ferre.LinkManager.Infrastructure.Tests;
 
 internal static class TestDb
 {
-    public static AppDbContext CreateContext()
+    public static string GetConnectionString()
     {
         var configuration = new ConfigurationBuilder()
             .AddUserSecrets(typeof(TestDb).Assembly)
             .Build();
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
+        return configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException(
                 "Connection string 'DefaultConnection' was not found in the test project's user secrets.");
+    }
 
+    public static AppDbContext CreateContext()
+    {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(connectionString)
+            .UseSqlServer(GetConnectionString())
             .Options;
 
         return new AppDbContext(options);
     }
 
-    // Deletes ONLY the given records. LinkRoleAccesses are removed by the database cascade.
+    // Deletes ONLY the given records (and their audit logs). LinkRoleAccesses are removed by the database cascade.
     public static async Task CleanupAsync(IReadOnlyCollection<Guid> linkIds, IReadOnlyCollection<Guid> categoryIds)
     {
         await using var db = CreateContext();
+
+        var entityIds = linkIds.Concat(categoryIds).ToList();
+
+        await db.AuditLogs
+            .Where(a => entityIds.Contains(a.EntityId))
+            .ExecuteDeleteAsync();
 
         await db.Links.IgnoreQueryFilters()
             .Where(l => linkIds.Contains(l.Id))

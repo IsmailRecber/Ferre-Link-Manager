@@ -1,4 +1,5 @@
 ﻿using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Domain.Audit;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Common;
 using Ferre.LinkManager.Domain.Links;
@@ -22,6 +23,8 @@ public class AppDbContext
     public DbSet<Link> Links => Set<Link>();
 
     public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     IQueryable<Link> IReadDbContext.Links => Links;
 
