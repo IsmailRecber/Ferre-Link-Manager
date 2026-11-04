@@ -15,5 +15,7 @@
     <ProjectReference Include="..\Ferre.LinkManager.Application\Ferre.LinkManager.Application.csproj" />
     <ProjectReference Include="..\Ferre.LinkManager.Domain\Ferre.LinkManager.Domain.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 </Project>
