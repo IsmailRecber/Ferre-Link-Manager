@@ -8,6 +8,7 @@ using Ferre.LinkManager.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Ferre.LinkManager.Infrastructure;
 
@@ -16,7 +17,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         string connectionString,
-        Action<AdminSeedOptions>? configureAdminSeed = null)
+        Action<AdminSeedOptions>? configureAdminSeed = null,
+        Action<FrontendOptions>? configureFrontend = null,
+        Action<SmtpOptions>? configureSmtp = null)
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
@@ -29,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ILinkRepository, LinkRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+
         services.AddDataProtection();
 
         services.AddIdentityCore<ApplicationUser>(options =>
@@ -52,6 +56,24 @@ public static class DependencyInjection
 
         services.Configure<AdminSeedOptions>(options => configureAdminSeed?.Invoke(options));
         services.AddScoped<IdentitySeeder>();
+
+        services.Configure<FrontendOptions>(options => configureFrontend?.Invoke(options));
+        services.Configure<SmtpOptions>(options => configureSmtp?.Invoke(options));
+
+        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IEmailVerificationLinkBuilder, EmailVerificationLinkBuilder>();
+
+        // If SMTP is configured, real e-mails are sent. Otherwise the console fallback is used.
+        services.AddSingleton<ConsoleEmailSender>();
+        services.AddScoped<SmtpEmailSender>();
+        services.AddScoped<IEmailSender>(sp =>
+        {
+            var smtp = sp.GetRequiredService<IOptions<SmtpOptions>>().Value;
+
+            return string.IsNullOrWhiteSpace(smtp.Host)
+                ? sp.GetRequiredService<ConsoleEmailSender>()
+                : sp.GetRequiredService<SmtpEmailSender>();
+        });
 
         return services;
     }

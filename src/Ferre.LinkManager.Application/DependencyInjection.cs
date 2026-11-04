@@ -9,6 +9,7 @@ using Ferre.LinkManager.Application.Links.GetMyLinks;
 using Ferre.LinkManager.Application.Links.UpdateLink;
 using Ferre.LinkManager.Application.Users.ConfirmEmail;
 using Ferre.LinkManager.Application.Users.Register;
+using Ferre.LinkManager.Application.Users.ResendVerificationEmail;
 using Ferre.LinkManager.Application.Users.SendVerificationEmail;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Links;
@@ -31,6 +32,7 @@ public static class DependencyInjection
 
         services.AddScoped<RegisterHandler>();
         services.AddScoped<ConfirmEmailHandler>();
+        services.AddScoped<ResendVerificationEmailHandler>();
 
         // One class listens to several events, so each event type points to the same instance.
         services.AddScoped<AuditEventHandler>();

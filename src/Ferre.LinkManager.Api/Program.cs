@@ -8,7 +8,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddInfrastructure(
     connectionString,
-    options => builder.Configuration.GetSection(AdminSeedOptions.SectionName).Bind(options));
+    options => builder.Configuration.GetSection(AdminSeedOptions.SectionName).Bind(options),
+    options => builder.Configuration.GetSection(FrontendOptions.SectionName).Bind(options),
+    options => builder.Configuration.GetSection(SmtpOptions.SectionName).Bind(options));
 
 var app = builder.Build();
 

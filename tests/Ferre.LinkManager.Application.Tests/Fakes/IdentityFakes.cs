@@ -8,6 +8,7 @@ public sealed class FakeIdentityService : IIdentityService
     public bool RegisterSucceeds { get; set; } = true;
     public string? Token { get; set; } = "token-123";
     public bool ConfirmSucceeds { get; set; } = true;
+    public string? PendingEmail { get; set; } = "user@example.com";
     public int RegisterCalls { get; private set; }
 
     public Task<RegisterUserResult> RegisterUserAsync(string email, string password, CancellationToken cancellationToken)
@@ -26,6 +27,9 @@ public sealed class FakeIdentityService : IIdentityService
 
     public Task<ConfirmEmailResult> ConfirmEmailAsync(Guid userId, string token, CancellationToken cancellationToken) =>
         Task.FromResult(new ConfirmEmailResult(ConfirmSucceeds));
+
+    public Task<string?> GetPendingConfirmationEmailAsync(Guid userId, CancellationToken cancellationToken) =>
+        Task.FromResult(PendingEmail);
 }
 
 public sealed class FakeEventPublisher : IEventPublisher
