@@ -7,6 +7,9 @@ using Ferre.LinkManager.Application.Links.CreateLink;
 using Ferre.LinkManager.Application.Links.DeleteLink;
 using Ferre.LinkManager.Application.Links.GetMyLinks;
 using Ferre.LinkManager.Application.Links.UpdateLink;
+using Ferre.LinkManager.Application.Users.ConfirmEmail;
+using Ferre.LinkManager.Application.Users.Register;
+using Ferre.LinkManager.Application.Users.SendVerificationEmail;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Links;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +29,9 @@ public static class DependencyInjection
         services.AddScoped<DeleteLinkHandler>();
         services.AddScoped<GetMyLinksHandler>();
 
+        services.AddScoped<RegisterHandler>();
+        services.AddScoped<ConfirmEmailHandler>();
+
         // One class listens to several events, so each event type points to the same instance.
         services.AddScoped<AuditEventHandler>();
         services.AddScoped<IEventHandler<LinkCreated>>(sp => sp.GetRequiredService<AuditEventHandler>());
@@ -33,6 +39,9 @@ public static class DependencyInjection
         services.AddScoped<IEventHandler<LinkDeleted>>(sp => sp.GetRequiredService<AuditEventHandler>());
         services.AddScoped<IEventHandler<CategoryCreated>>(sp => sp.GetRequiredService<AuditEventHandler>());
         services.AddScoped<IEventHandler<CategoryDeleted>>(sp => sp.GetRequiredService<AuditEventHandler>());
+
+        services.AddScoped<SendVerificationEmailHandler>();
+        services.AddScoped<IEventHandler<UserRegistered>>(sp => sp.GetRequiredService<SendVerificationEmailHandler>());
 
         return services;
     }
