@@ -52,6 +52,7 @@ public static class DependencyInjection
         })
             .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<AppDbContext>()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
 
         services.Configure<AdminSeedOptions>(options => configureAdminSeed?.Invoke(options));
