@@ -1,10 +1,13 @@
 ﻿using Ferre.LinkManager.Application.Audit;
 using Ferre.LinkManager.Application.Categories.CreateCategory;
 using Ferre.LinkManager.Application.Categories.DeleteCategory;
+using Ferre.LinkManager.Application.Categories.GetCategories;
 using Ferre.LinkManager.Application.Categories.UpdateCategory;
 using Ferre.LinkManager.Application.Common.Abstractions;
 using Ferre.LinkManager.Application.Links.CreateLink;
 using Ferre.LinkManager.Application.Links.DeleteLink;
+using Ferre.LinkManager.Application.Links.GetAllLinks;
+using Ferre.LinkManager.Application.Links.GetLinkRedirect;
 using Ferre.LinkManager.Application.Links.GetMyLinks;
 using Ferre.LinkManager.Application.Links.UpdateLink;
 using Ferre.LinkManager.Application.Users.ConfirmEmail;
@@ -24,11 +27,14 @@ public static class DependencyInjection
         services.AddScoped<CreateCategoryHandler>();
         services.AddScoped<UpdateCategoryHandler>();
         services.AddScoped<DeleteCategoryHandler>();
+        services.AddScoped<GetCategoriesHandler>();
 
         services.AddScoped<CreateLinkHandler>();
         services.AddScoped<UpdateLinkHandler>();
         services.AddScoped<DeleteLinkHandler>();
         services.AddScoped<GetMyLinksHandler>();
+        services.AddScoped<GetAllLinksHandler>();
+        services.AddScoped<GetLinkRedirectHandler>();
 
         services.AddScoped<RegisterHandler>();
         services.AddScoped<ConfirmEmailHandler>();
