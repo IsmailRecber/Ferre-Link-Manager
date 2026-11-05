@@ -40,3 +40,4 @@ app.MapLinkEndpoints();
 app.MapUserManagementEndpoints();
 
 app.Run();
+public partial class Program { }
