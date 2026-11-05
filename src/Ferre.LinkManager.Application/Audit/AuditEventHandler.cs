@@ -1,4 +1,5 @@
 ﻿using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Application.Users.SetUserActive;
 using Ferre.LinkManager.Domain.Audit;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Links;
@@ -10,7 +11,9 @@ public sealed class AuditEventHandler :
     IEventHandler<LinkUpdated>,
     IEventHandler<LinkDeleted>,
     IEventHandler<CategoryCreated>,
-    IEventHandler<CategoryDeleted>
+    IEventHandler<CategoryDeleted>,
+    IEventHandler<UserActivated>,
+    IEventHandler<UserDeactivated>
 {
     private readonly IAuditLogRepository _auditLogRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -40,6 +43,13 @@ public sealed class AuditEventHandler :
 
     public Task HandleAsync(CategoryDeleted e, CancellationToken cancellationToken) =>
         WriteAsync(AuditActions.CategoryDeleted, "Category", e.CategoryId, e.Name, null, e.OccurredOnUtc, cancellationToken);
+
+    // User events carry no name or e-mail on purpose: only the user id is stored.
+    public Task HandleAsync(UserActivated e, CancellationToken cancellationToken) =>
+        WriteAsync(AuditActions.UserActivated, "User", e.UserId, null, null, e.OccurredOnUtc, cancellationToken);
+
+    public Task HandleAsync(UserDeactivated e, CancellationToken cancellationToken) =>
+        WriteAsync(AuditActions.UserDeactivated, "User", e.UserId, null, null, e.OccurredOnUtc, cancellationToken);
 
     private async Task WriteAsync(
         string action,

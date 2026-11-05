@@ -7,4 +7,6 @@ public static class AuditActions
     public const string LinkDeleted = "Link.Deleted";
     public const string CategoryCreated = "Category.Created";
     public const string CategoryDeleted = "Category.Deleted";
+    public const string UserActivated = "User.Activated";
+    public const string UserDeactivated = "User.Deactivated";
 }

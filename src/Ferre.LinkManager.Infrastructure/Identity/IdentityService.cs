@@ -3,6 +3,7 @@ using Ferre.LinkManager.Application.Common.Abstractions;
 using Ferre.LinkManager.Application.Common.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ferre.LinkManager.Infrastructure.Identity;
 
@@ -96,6 +97,70 @@ public sealed class IdentityService : IIdentityService
         }
 
         return user.Email;
+    }
+
+    public async Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken)
+    {
+        var users = await _userManager.Users
+            .AsNoTracking()
+            .OrderBy(user => user.Email)
+            .ToListAsync(cancellationToken);
+
+        var result = new List<UserSummary>(users.Count);
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+
+            result.Add(new UserSummary(
+                user.Id,
+                user.Email ?? string.Empty,
+                user.IsActive,
+                user.EmailConfirmed,
+                roles.ToArray()));
+        }
+
+        return result;
+    }
+
+    public async Task<UserStateChange> SetUserActiveAsync(
+        Guid userId, bool isActive, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+
+        if (user is null)
+        {
+            return UserStateChange.NotFound;
+        }
+
+        if (user.IsActive == isActive)
+        {
+            return UserStateChange.Unchanged;
+        }
+
+        user.IsActive = isActive;
+
+        var updateResult = await _userManager.UpdateAsync(user);
+
+        if (!updateResult.Succeeded)
+        {
+            throw new InvalidOperationException(
+                $"Updating the user failed: {string.Join(", ", ToCodes(updateResult))}");
+        }
+
+        if (!isActive)
+        {
+            // A new security stamp makes the user's existing login cookies invalid.
+            var stampResult = await _userManager.UpdateSecurityStampAsync(user);
+
+            if (!stampResult.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    $"Invalidating the user's sessions failed: {string.Join(", ", ToCodes(stampResult))}");
+            }
+        }
+
+        return UserStateChange.Changed;
     }
 
     private static IReadOnlyCollection<string> ToCodes(IdentityResult result) =>

@@ -9,6 +9,8 @@ public sealed class FakeIdentityService : IIdentityService
     public string? Token { get; set; } = "token-123";
     public bool ConfirmSucceeds { get; set; } = true;
     public string? PendingEmail { get; set; } = "user@example.com";
+    public UserStateChange SetActiveResult { get; set; } = UserStateChange.Changed;
+    public List<UserSummary> Users { get; } = new();
     public int RegisterCalls { get; private set; }
 
     public Task<RegisterUserResult> RegisterUserAsync(string email, string password, CancellationToken cancellationToken)
@@ -30,6 +32,12 @@ public sealed class FakeIdentityService : IIdentityService
 
     public Task<string?> GetPendingConfirmationEmailAsync(Guid userId, CancellationToken cancellationToken) =>
         Task.FromResult(PendingEmail);
+
+    public Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<UserSummary>>(Users);
+
+    public Task<UserStateChange> SetUserActiveAsync(Guid userId, bool isActive, CancellationToken cancellationToken) =>
+        Task.FromResult(SetActiveResult);
 }
 
 public sealed class FakeEventPublisher : IEventPublisher
@@ -57,4 +65,11 @@ public sealed class FakeEmailSender : IEmailSender
 public sealed class FakeEmailVerificationLinkBuilder : IEmailVerificationLinkBuilder
 {
     public string Build(Guid userId, string token) => $"https://app.test/verify?userId={userId}&token={token}";
+}
+
+public sealed class FakeCurrentUser : ICurrentUser
+{
+    public FakeCurrentUser(Guid? userId) => UserId = userId;
+
+    public Guid? UserId { get; }
 }

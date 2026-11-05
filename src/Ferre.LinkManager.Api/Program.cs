@@ -37,5 +37,6 @@ app.MapGet("/", () => "Ferre Link Manager API");
 app.MapAuthEndpoints();
 app.MapCategoryEndpoints();
 app.MapLinkEndpoints();
+app.MapUserManagementEndpoints();
 
 app.Run();
