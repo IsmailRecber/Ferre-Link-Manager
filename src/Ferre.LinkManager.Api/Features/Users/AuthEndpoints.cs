@@ -21,7 +21,7 @@ public static class AuthEndpoints
 
             httpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!, new CookieOptions
             {
-                HttpOnly = false, // JavaScript must be able to read it
+                HttpOnly = false,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 IsEssential = true
@@ -64,7 +64,6 @@ public static class AuthEndpoints
         {
             await handler.HandleAsync(new ResendVerificationEmailCommand(request.UserId), cancellationToken);
 
-            // Always the same answer, so nobody can learn whether an account exists.
             return Results.Accepted();
         });
 

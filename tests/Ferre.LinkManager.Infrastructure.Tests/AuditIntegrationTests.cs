@@ -34,7 +34,7 @@ public class AuditIntegrationTests : IAsyncLifetime
         _categoryIds.Add(category.Id);
 
         var link = await sp.GetRequiredService<CreateLinkHandler>().HandleAsync(
-            new CreateLinkCommand("Audit link", "https://audit.local", category.Id, new[] { "TestRole-" + Guid.NewGuid() }),
+            new CreateLinkCommand("Audit link", "https://audit.local", category.Id, new[] { "User" }),
             CancellationToken.None);
         _linkIds.Add(link.Id);
 

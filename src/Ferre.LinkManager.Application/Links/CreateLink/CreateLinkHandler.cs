@@ -1,5 +1,6 @@
 ﻿using Ferre.LinkManager.Application.Categories;
 using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Application.Common.Authorization;
 using Ferre.LinkManager.Application.Common.Exceptions;
 using Ferre.LinkManager.Domain.Links;
 
@@ -25,6 +26,9 @@ public sealed class CreateLinkHandler
         CreateLinkCommand command,
         CancellationToken cancellationToken)
     {
+        var roles = Roles.Canonicalize(command.Roles)
+            ?? throw new ValidationException(new[] { "InvalidRole" });
+
         var category = await _categoryRepository.GetByIdAsync(command.CategoryId, cancellationToken)
             ?? throw new NotFoundException($"Category '{command.CategoryId}' was not found.");
 
@@ -33,7 +37,7 @@ public sealed class CreateLinkHandler
             throw new ConflictException("Links cannot be added to an inactive category.");
         }
 
-        var link = Link.Create(command.Title, command.Url, category.Id, command.Roles);
+        var link = Link.Create(command.Title, command.Url, category.Id, roles);
 
         await _linkRepository.AddAsync(link, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

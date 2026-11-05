@@ -1,4 +1,6 @@
 using Ferre.LinkManager.Api;
+using Ferre.LinkManager.Api.Features.Categories;
+using Ferre.LinkManager.Api.Features.Links;
 using Ferre.LinkManager.Api.Features.Users;
 using Ferre.LinkManager.Application;
 using Ferre.LinkManager.Infrastructure;
@@ -33,5 +35,7 @@ app.UseAuthorization();
 
 app.MapGet("/", () => "Ferre Link Manager API");
 app.MapAuthEndpoints();
+app.MapCategoryEndpoints();
+app.MapLinkEndpoints();
 
 app.Run();

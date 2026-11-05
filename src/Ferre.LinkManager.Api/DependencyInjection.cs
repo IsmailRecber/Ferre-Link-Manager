@@ -1,6 +1,7 @@
 ﻿using Ferre.LinkManager.Api.Errors;
 using Ferre.LinkManager.Api.Security;
 using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Application.Common.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Ferre.LinkManager.Api;
@@ -53,7 +54,10 @@ public static class DependencyInjection
         services.Configure<SecurityStampValidatorOptions>(options =>
             options.ValidationInterval = TimeSpan.FromMinutes(1));
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(AuthorizationPolicies.AdminOnly, policy => policy.RequireRole(Roles.Admin));
+        });
 
         return services;
     }
