@@ -13,6 +13,10 @@ public sealed class TestApiFactory : WebApplicationFactory<Program>
         // Program.cs reads the connection string while it starts, so it must be available before that.
         Environment.SetEnvironmentVariable(
             "ConnectionStrings__DefaultConnection", TestSettings.GetConnectionString());
+
+        // Tests must never send telemetry to SigNoz, even if the Api user secrets contain an ingestion key.
+        // A blank space is used on purpose: on Windows an empty value would delete the variable.
+        Environment.SetEnvironmentVariable("SigNoz__IngestionKey", " ");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

@@ -2,11 +2,14 @@ using Ferre.LinkManager.Api;
 using Ferre.LinkManager.Api.Features.Categories;
 using Ferre.LinkManager.Api.Features.Links;
 using Ferre.LinkManager.Api.Features.Users;
+using Ferre.LinkManager.Api.Observability;
 using Ferre.LinkManager.Application;
 using Ferre.LinkManager.Infrastructure;
 using Ferre.LinkManager.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddObservability();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
@@ -40,4 +43,5 @@ app.MapLinkEndpoints();
 app.MapUserManagementEndpoints();
 
 app.Run();
+
 public partial class Program { }
