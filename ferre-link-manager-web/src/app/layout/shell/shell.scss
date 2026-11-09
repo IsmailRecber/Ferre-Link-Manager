@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: var(--mat-sys-surface-container-lowest, #fafafa);
+}
+
+.shell-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 8px;
+  background: var(--mat-sys-surface, #ffffff);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+
+.shell-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: 12px;
+
+  a.active {
+    background: var(--mat-sys-secondary-container, #e8eaf6);
+  }
+}
+
+.shell-spacer {
+  flex: 1 1 auto;
+}
+
+.shell-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shell-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-weight: 600;
+  background: var(--mat-sys-primary, #3f51b5);
+  color: var(--mat-sys-on-primary, #ffffff);
+}
+
+.shell-menu-info {
+  padding: 8px 16px 12px;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant, #5f6368);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .shell-brand-name,
+  .shell-email {
+    display: none;
+  }
+
+  .shell-nav {
+    margin-left: 0;
+  }
+}

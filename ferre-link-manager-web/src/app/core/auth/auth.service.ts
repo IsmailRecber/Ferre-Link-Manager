@@ -16,19 +16,26 @@ export interface RegisterResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly currentUser = signal<CurrentUser | null>(null);
+  private loaded = false;
 
   readonly user = this.currentUser.asReadonly();
   readonly isAdmin = computed(() => this.currentUser()?.roles.includes('Admin') ?? false);
+
+  /** Returns the signed-in user. The API is asked only once, the answer is kept in memory. */
+  async ensureUser(): Promise<CurrentUser | null> {
+    return this.loaded ? this.currentUser() : this.loadCurrentUser();
+  }
 
   /** Asks the API who is signed in. Returns null when nobody is. */
   async loadCurrentUser(): Promise<CurrentUser | null> {
     try {
       const user = await firstValueFrom(this.http.get<CurrentUser>('/api/auth/me'));
       this.currentUser.set(user);
+      this.loaded = true;
       return user;
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        this.currentUser.set(null);
+        this.clearSession();
         return null;
       }
 
@@ -43,7 +50,13 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await firstValueFrom(this.http.post('/api/auth/logout', {}));
+    this.clearSession();
+  }
+
+  /** Forgets the signed-in user locally. The server session is not touched. */
+  clearSession(): void {
     this.currentUser.set(null);
+    this.loaded = true;
   }
 
   register(email: string, password: string): Promise<RegisterResponse> {

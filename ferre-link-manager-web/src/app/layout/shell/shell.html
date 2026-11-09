@@ -1,0 +1,36 @@
+<mat-toolbar class="shell-toolbar">
+  <a class="shell-brand" routerLink="/">
+    <span class="auth-logo">F</span>
+    <span class="shell-brand-name">Ferre Link Manager</span>
+  </a>
+
+  <nav class="shell-nav">
+    <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Linklerim
+    </a>
+    @if (auth.isAdmin()) {
+      <a mat-button routerLink="/admin" routerLinkActive="active">Yönetim</a>
+    }
+  </nav>
+
+  <span class="shell-spacer"></span>
+
+  @if (auth.user(); as user) {
+    <button mat-button class="shell-user" [matMenuTriggerFor]="userMenu" aria-label="Hesap menüsü">
+      <span class="shell-avatar">{{ initial() }}</span>
+      <span class="shell-email">{{ user.email }}</span>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <div class="shell-menu-info">
+        <div>{{ user.email }}</div>
+        <div>Rol: {{ user.roles.join(', ') }}</div>
+      </div>
+      <button mat-menu-item (click)="logout()">Çıkış yap</button>
+    </mat-menu>
+  }
+</mat-toolbar>
+
+<main class="shell-content">
+  <router-outlet />
+</main>

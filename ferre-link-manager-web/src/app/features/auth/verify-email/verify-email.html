@@ -18,10 +18,17 @@
         </div>
         <a mat-flat-button class="auth-submit" routerLink="/login">Giriş yap</a>
       }
+      @case ('retry') {
+        <h1>Güvenlik doğrulaması başarısız</h1>
+        <div class="auth-message auth-error" role="alert">
+          <p>Güvenlik doğrulaması tamamlanamadı. Bağlantınız geçerli olabilir, lütfen tekrar deneyin.</p>
+        </div>
+        <button mat-flat-button class="auth-submit" type="button" (click)="verify()">Tekrar dene</button>
+      }
       @case ('failed') {
         <h1>Doğrulama yapılamadı</h1>
         <div class="auth-message auth-error" role="alert">
-          <p>Bağlantı geçersiz, süresi dolmuş veya daha önce kullanılmış olabilir.</p>
+          <p>Bağlantı geçersiz veya süresi dolmuş olabilir.</p>
           <p>E-postanız zaten doğrulandıysa doğrudan giriş yapmayı deneyin.</p>
         </div>
         <a mat-flat-button class="auth-submit" routerLink="/login">Giriş sayfasına git</a>
