@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, DestroyRef, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,6 +28,21 @@ export class Shell {
     (this.auth.user()?.email ?? '?').charAt(0).toUpperCase(),
   );
 
+  constructor() {
+    // When the user comes back to this tab, check that the session is still alive
+    // (it may have ended in another tab).
+    const onVisibilityChange = (): void => {
+      if (document.visibilityState === 'visible') {
+        void this.checkSession();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    inject(DestroyRef).onDestroy(() =>
+      document.removeEventListener('visibilitychange', onVisibilityChange),
+    );
+  }
+
   protected async logout(): Promise<void> {
     const confirmed = await this.confirmService.confirm({
       title: 'Çıkış yap',
@@ -47,5 +62,15 @@ export class Shell {
     }
 
     await this.router.navigateByUrl('/login');
+  }
+
+  private async checkSession(): Promise<void> {
+    try {
+      if (!(await this.auth.loadCurrentUser())) {
+        await this.router.navigateByUrl('/login');
+      }
+    } catch {
+      // A network problem is not a reason to sign the user out.
+    }
   }
 }
