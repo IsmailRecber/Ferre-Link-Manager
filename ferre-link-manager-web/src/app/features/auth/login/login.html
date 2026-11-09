@@ -1,0 +1,55 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-logo">F</span>
+      <span class="auth-brand-name">Ferre Link Manager</span>
+    </div>
+
+    <h1>Giriş yap</h1>
+    <p class="auth-subtitle">Hesabınızla giriş yaparak bağlantılarınıza ulaşın.</p>
+
+    @if (busy()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+
+    @if (errors().length > 0) {
+      <div class="auth-message auth-error" role="alert">
+        @for (message of errors(); track message) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>E-posta</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="username" />
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>E-posta gerekli.</mat-error>
+        } @else if (form.controls.email.hasError('email')) {
+          <mat-error>Geçerli bir e-posta adresi girin.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Parola</mat-label>
+        <input
+          matInput
+          [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <button mat-button matSuffix type="button" (click)="showPassword.set(!showPassword())">
+          {{ showPassword() ? 'Gizle' : 'Göster' }}
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>Parola gerekli.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-flat-button class="auth-submit" type="submit" [disabled]="busy()">Giriş yap</button>
+    </form>
+
+    <p class="auth-footer">Hesabınız yok mu? <a routerLink="/register">Hesap oluşturun</a></p>
+  </section>
+</main>

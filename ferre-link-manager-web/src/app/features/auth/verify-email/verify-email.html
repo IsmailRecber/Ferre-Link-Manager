@@ -1,0 +1,31 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-logo">F</span>
+      <span class="auth-brand-name">Ferre Link Manager</span>
+    </div>
+
+    @switch (status()) {
+      @case ('checking') {
+        <h1>E-posta doğrulanıyor</h1>
+        <p class="auth-subtitle">Lütfen bekleyin.</p>
+        <mat-progress-bar mode="indeterminate" />
+      }
+      @case ('success') {
+        <h1>E-postanız doğrulandı</h1>
+        <div class="auth-message auth-success" role="status">
+          <p>Artık hesabınızla giriş yapabilirsiniz.</p>
+        </div>
+        <a mat-flat-button class="auth-submit" routerLink="/login">Giriş yap</a>
+      }
+      @case ('failed') {
+        <h1>Doğrulama yapılamadı</h1>
+        <div class="auth-message auth-error" role="alert">
+          <p>Bağlantı geçersiz, süresi dolmuş veya daha önce kullanılmış olabilir.</p>
+          <p>E-postanız zaten doğrulandıysa doğrudan giriş yapmayı deneyin.</p>
+        </div>
+        <a mat-flat-button class="auth-submit" routerLink="/login">Giriş sayfasına git</a>
+      }
+    }
+  </section>
+</main>

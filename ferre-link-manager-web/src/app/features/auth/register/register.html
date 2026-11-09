@@ -1,0 +1,113 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-logo">F</span>
+      <span class="auth-brand-name">Ferre Link Manager</span>
+    </div>
+
+    @if (registeredUserId()) {
+      <h1>E-postanızı kontrol edin</h1>
+      <div class="auth-message auth-success" role="status">
+        <p>Hesabınız oluşturuldu. E-posta adresinize bir doğrulama bağlantısı gönderdik.</p>
+        <p>Gelen kutunuzu ve gerekirse spam klasörünü kontrol edin. Giriş yapabilmek için e-postanızı doğrulamanız gerekir.</p>
+      </div>
+
+      @if (busy()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+
+      @if (resendMessage()) {
+        <p class="auth-note" role="status">{{ resendMessage() }}</p>
+      }
+
+      <button
+        mat-stroked-button
+        class="auth-submit"
+        type="button"
+        (click)="resend()"
+        [disabled]="busy() || resendCooldown() > 0"
+      >
+        @if (resendCooldown() > 0) {
+          Tekrar gönder ({{ resendCooldown() }} sn)
+        } @else {
+          Doğrulama e-postasını tekrar gönder
+        }
+      </button>
+
+      <p class="auth-footer"><a routerLink="/login">Giriş sayfasına git</a></p>
+    } @else {
+      <h1>Hesap oluştur</h1>
+      <p class="auth-subtitle">Bağlantılarınıza ulaşmak için hesap oluşturun.</p>
+
+      @if (busy()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+
+      @if (errors().length > 0) {
+        <div class="auth-message auth-error" role="alert">
+          @for (message of errors(); track message) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>E-posta</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="username" />
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>E-posta gerekli.</mat-error>
+          } @else if (form.controls.email.hasError('email')) {
+            <mat-error>Geçerli bir e-posta adresi girin.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Parola</mat-label>
+          <input
+            matInput
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+          <button mat-button matSuffix type="button" (click)="showPassword.set(!showPassword())">
+            {{ showPassword() ? 'Gizle' : 'Göster' }}
+          </button>
+          <mat-hint>En az 6 karakter, bir büyük harf, bir küçük harf ve bir rakam.</mat-hint>
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>Parola gerekli.</mat-error>
+          } @else if (form.controls.password.hasError('minlength')) {
+            <mat-error>Parola en az 6 karakter olmalı.</mat-error>
+          } @else if (form.controls.password.hasError('maxlength')) {
+            <mat-error>Parola en fazla 128 karakter olabilir.</mat-error>
+          } @else if (form.controls.password.hasError('upper')) {
+            <mat-error>Parola en az bir büyük harf içermeli.</mat-error>
+          } @else if (form.controls.password.hasError('lower')) {
+            <mat-error>Parola en az bir küçük harf içermeli.</mat-error>
+          } @else if (form.controls.password.hasError('digit')) {
+            <mat-error>Parola en az bir rakam içermeli.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Parola (tekrar)</mat-label>
+          <input
+            matInput
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+          />
+          @if (form.controls.confirmPassword.hasError('required')) {
+            <mat-error>Parolayı tekrar girin.</mat-error>
+          } @else if (form.controls.confirmPassword.hasError('mismatch')) {
+            <mat-error>Parolalar eşleşmiyor.</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button class="auth-submit" type="submit" [disabled]="busy()">Hesap oluştur</button>
+      </form>
+
+      <p class="auth-footer">Zaten hesabınız var mı? <a routerLink="/login">Giriş yapın</a></p>
+    }
+  </section>
+</main>
