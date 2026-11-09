@@ -44,6 +44,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/admin/links/links-page').then((m) => m.LinksPage),
           },
+          {
+            path: 'users',
+            loadComponent: () =>
+              import('./features/admin/users/users-page').then((m) => m.UsersPage),
+          },
         ],
       },
     ],

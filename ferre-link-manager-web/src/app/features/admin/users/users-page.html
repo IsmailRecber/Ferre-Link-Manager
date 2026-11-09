@@ -1,0 +1,81 @@
+<section>
+  <div class="admin-header">
+    <div>
+      <h2>Kullanıcılar</h2>
+      @if (!loading() && users().length > 0) {
+        <p class="auth-note">{{ filtered().length }} / {{ users().length }} kullanıcı gösteriliyor</p>
+      }
+    </div>
+
+    <div class="admin-row-actions">
+      <mat-form-field appearance="outline" class="links-search" subscriptSizing="dynamic">
+        <mat-label>E-posta ara</mat-label>
+        <input matInput type="search" [value]="query()" (input)="onSearch($event)" autocomplete="off" />
+      </mat-form-field>
+      <button mat-stroked-button type="button" (click)="load()" [disabled]="loading() || working()">
+        Yenile
+      </button>
+    </div>
+  </div>
+
+  @if (loading() || working()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (message(); as info) {
+    <div
+      class="auth-message"
+      [class.auth-error]="info.kind === 'error'"
+      [class.auth-success]="info.kind === 'success'"
+      [attr.role]="info.kind === 'error' ? 'alert' : 'status'"
+    >
+      <p>{{ info.text }}</p>
+    </div>
+  }
+
+  @if (!loading() && users().length > 0 && filtered().length === 0) {
+    <div class="links-empty">
+      <p><strong>Aramanızla eşleşen kullanıcı yok.</strong></p>
+      <button mat-stroked-button type="button" (click)="query.set('')">Aramayı temizle</button>
+    </div>
+  }
+
+  <ul class="admin-list">
+    @for (user of filtered(); track user.id) {
+      <li class="admin-row">
+        <div class="admin-row-main admin-row-stack">
+          <div class="admin-row-line">
+            <span class="admin-row-title">{{ user.email }}</span>
+            @if (isSelf(user)) {
+              <span class="admin-chip">Siz</span>
+            }
+          </div>
+
+          <div class="admin-chips">
+            <span class="admin-badge" [class.admin-badge-off]="!user.isActive">
+              {{ user.isActive ? 'Aktif' : 'Pasif' }}
+            </span>
+            <span class="admin-badge" [class.admin-badge-off]="!user.emailConfirmed">
+              {{ user.emailConfirmed ? 'E-posta doğrulandı' : 'E-posta doğrulanmadı' }}
+            </span>
+            @for (role of user.roles; track role) {
+              <span class="admin-chip">{{ roleLabel(role) }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="admin-row-actions">
+          <button
+            mat-button
+            type="button"
+            (click)="toggleActive(user)"
+            [disabled]="loading() || working() || isSelf(user)"
+            [attr.title]="isSelf(user) ? 'Kendi hesabınızı pasif yapamazsınız.' : null"
+          >
+            {{ user.isActive ? 'Pasif yap' : 'Aktif yap' }}
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+</section>
