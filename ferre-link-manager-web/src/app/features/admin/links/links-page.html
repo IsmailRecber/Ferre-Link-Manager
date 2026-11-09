@@ -1,0 +1,86 @@
+<section>
+  <div class="admin-header">
+    <div>
+      <h2>Linkler</h2>
+      @if (!loading() && links().length > 0) {
+        <p class="auth-note">{{ links().length }} link</p>
+      }
+    </div>
+
+    <div class="admin-row-actions">
+      <button mat-stroked-button type="button" (click)="load()" [disabled]="loading() || working()">
+        Yenile
+      </button>
+      <button
+        mat-flat-button
+        type="button"
+        (click)="create()"
+        [disabled]="loading() || working() || activeCategories().length === 0"
+      >
+        Yeni link
+      </button>
+    </div>
+  </div>
+
+  @if (loading() || working()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (message(); as info) {
+    <div
+      class="auth-message"
+      [class.auth-error]="info.kind === 'error'"
+      [class.auth-success]="info.kind === 'success'"
+      [attr.role]="info.kind === 'error' ? 'alert' : 'status'"
+    >
+      <p>{{ info.text }}</p>
+    </div>
+  }
+
+  @if (!loading() && activeCategories().length === 0 && message()?.kind !== 'error') {
+    <div class="auth-message auth-error" role="status">
+      <p>Link ekleyebilmek için önce <strong>Kategoriler</strong> sekmesinden aktif bir kategori oluşturun.</p>
+    </div>
+  }
+
+  @if (!loading() && links().length === 0 && message()?.kind !== 'error') {
+    <div class="links-empty">
+      <p><strong>Henüz link yok.</strong></p>
+      <p>Kullanıcıların erişeceği ilk bağlantıyı ekleyin.</p>
+    </div>
+  }
+
+  <ul class="admin-list">
+    @for (link of links(); track link.id) {
+      <li class="admin-row">
+        <div class="admin-row-main admin-row-stack">
+          <div class="admin-row-line">
+            <span class="admin-row-title">{{ link.title }}</span>
+            <span class="admin-badge" [class.admin-badge-off]="!link.isActive">
+              {{ link.isActive ? 'Aktif' : 'Pasif' }}
+            </span>
+          </div>
+          <div class="admin-meta">Kategori: {{ link.categoryName }}</div>
+          <div class="admin-meta admin-url">{{ link.url }}</div>
+          <div class="admin-chips">
+            @for (role of link.roles; track role) {
+              <span class="admin-chip">{{ roleLabel(role) }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="admin-row-actions">
+          <button mat-button type="button" (click)="edit(link)" [disabled]="loading() || working()">
+            Düzenle
+          </button>
+          <button mat-button type="button" (click)="toggleActive(link)" [disabled]="loading() || working()">
+            {{ link.isActive ? 'Pasif yap' : 'Aktif yap' }}
+          </button>
+          <button mat-button type="button" (click)="remove(link)" [disabled]="loading() || working()">
+            Sil
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+</section>

@@ -11,6 +11,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
       <nav class="admin-tabs" aria-label="Yönetim bölümleri">
         <a mat-button routerLink="categories" routerLinkActive="active">Kategoriler</a>
+        <a mat-button routerLink="links" routerLinkActive="active">Linkler</a>
       </nav>
 
       <router-outlet />

@@ -39,6 +39,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/admin/categories/categories-page').then((m) => m.CategoriesPage),
           },
+          {
+            path: 'links',
+            loadComponent: () =>
+              import('./features/admin/links/links-page').then((m) => m.LinksPage),
+          },
         ],
       },
     ],
