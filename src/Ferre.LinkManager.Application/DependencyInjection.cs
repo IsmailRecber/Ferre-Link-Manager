@@ -9,6 +9,7 @@ using Ferre.LinkManager.Application.Links.DeleteLink;
 using Ferre.LinkManager.Application.Links.GetAllLinks;
 using Ferre.LinkManager.Application.Links.GetLinkRedirect;
 using Ferre.LinkManager.Application.Links.GetMyLinks;
+using Ferre.LinkManager.Application.Links.SetLinkActive;
 using Ferre.LinkManager.Application.Links.UpdateLink;
 using Ferre.LinkManager.Application.Users.ConfirmEmail;
 using Ferre.LinkManager.Application.Users.GetUsers;
@@ -34,6 +35,7 @@ public static class DependencyInjection
         services.AddScoped<CreateLinkHandler>();
         services.AddScoped<UpdateLinkHandler>();
         services.AddScoped<DeleteLinkHandler>();
+        services.AddScoped<SetLinkActiveHandler>();
         services.AddScoped<GetMyLinksHandler>();
         services.AddScoped<GetAllLinksHandler>();
         services.AddScoped<GetLinkRedirectHandler>();

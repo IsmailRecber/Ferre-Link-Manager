@@ -5,6 +5,7 @@ using Ferre.LinkManager.Application.Links.DeleteLink;
 using Ferre.LinkManager.Application.Links.GetAllLinks;
 using Ferre.LinkManager.Application.Links.GetLinkRedirect;
 using Ferre.LinkManager.Application.Links.GetMyLinks;
+using Ferre.LinkManager.Application.Links.SetLinkActive;
 using Ferre.LinkManager.Application.Links.UpdateLink;
 
 namespace Ferre.LinkManager.Api.Features.Links;
@@ -62,6 +63,14 @@ public static class LinkEndpoints
                 new UpdateLinkCommand(
                     id, request.Title, request.Url, request.CategoryId, request.Roles ?? Array.Empty<string>()),
                 cancellationToken);
+
+            return Results.NoContent();
+        });
+
+        writes.MapPut("{id:guid}/active", async (
+            Guid id, SetLinkActiveRequest request, SetLinkActiveHandler handler, CancellationToken cancellationToken) =>
+        {
+            await handler.HandleAsync(new SetLinkActiveCommand(id, request.IsActive), cancellationToken);
 
             return Results.NoContent();
         });
