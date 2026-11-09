@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin-home',
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, MatButtonModule],
   template: `
     <section class="page">
       <h1>Yönetim</h1>
-      <p class="auth-note">
-        Kategori, link ve kullanıcı yönetimi burada olacak. Bu sayfa sonraki adımlarda tamamlanacak.
-      </p>
+
+      <nav class="admin-tabs" aria-label="Yönetim bölümleri">
+        <a mat-button routerLink="categories" routerLinkActive="active">Kategoriler</a>
+      </nav>
+
+      <router-outlet />
     </section>
   `,
 })

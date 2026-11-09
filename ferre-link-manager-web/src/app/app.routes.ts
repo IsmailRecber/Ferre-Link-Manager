@@ -32,6 +32,14 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [adminGuard],
         loadComponent: () => import('./features/admin/admin-home').then((m) => m.AdminHome),
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'categories' },
+          {
+            path: 'categories',
+            loadComponent: () =>
+              import('./features/admin/categories/categories-page').then((m) => m.CategoriesPage),
+          },
+        ],
       },
     ],
   },

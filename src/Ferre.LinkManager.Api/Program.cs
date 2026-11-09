@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Ferre.LinkManager.Api;
 using Ferre.LinkManager.Api.Features.Categories;
 using Ferre.LinkManager.Api.Features.Links;
@@ -29,6 +30,26 @@ using (var scope = app.Services.CreateScope())
 {
     await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
 }
+
+// Reports requests that take longer than half a second. Only the path is logged, never the query string.
+app.Use(async (context, next) =>
+{
+    var stopwatch = Stopwatch.StartNew();
+
+    await next();
+
+    stopwatch.Stop();
+
+    if (stopwatch.ElapsedMilliseconds > 500)
+    {
+        app.Logger.LogWarning(
+            "Slow request: {Method} {Path} -> {StatusCode} in {ElapsedMs} ms",
+            context.Request.Method,
+            context.Request.Path.Value,
+            context.Response.StatusCode,
+            stopwatch.ElapsedMilliseconds);
+    }
+});
 
 // Order matters: errors first, then authentication, then authorization.
 app.UseExceptionHandler();

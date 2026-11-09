@@ -1,0 +1,66 @@
+<section>
+  <div class="admin-header">
+    <div>
+      <h2>Kategoriler</h2>
+      @if (!loading() && categories().length > 0) {
+        <p class="auth-note">{{ categories().length }} kategori</p>
+      }
+    </div>
+
+    <div class="admin-row-actions">
+      <button mat-stroked-button type="button" (click)="load()" [disabled]="loading() || working()">
+        Yenile
+      </button>
+      <button mat-flat-button type="button" (click)="create()" [disabled]="loading() || working()">
+        Yeni kategori
+      </button>
+    </div>
+  </div>
+
+  @if (loading() || working()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (message(); as info) {
+    <div
+      class="auth-message"
+      [class.auth-error]="info.kind === 'error'"
+      [class.auth-success]="info.kind === 'success'"
+      [attr.role]="info.kind === 'error' ? 'alert' : 'status'"
+    >
+      <p>{{ info.text }}</p>
+    </div>
+  }
+
+  @if (!loading() && categories().length === 0 && message()?.kind !== 'error') {
+    <div class="links-empty">
+      <p><strong>Henüz kategori yok.</strong></p>
+      <p>Bağlantıları gruplamak için ilk kategoriyi oluşturun.</p>
+    </div>
+  }
+
+  <ul class="admin-list">
+    @for (category of categories(); track category.id) {
+      <li class="admin-row">
+        <div class="admin-row-main">
+          <span class="admin-row-title">{{ category.name }}</span>
+          <span class="admin-badge" [class.admin-badge-off]="!category.isActive">
+            {{ category.isActive ? 'Aktif' : 'Pasif' }}
+          </span>
+        </div>
+
+        <div class="admin-row-actions">
+          <button mat-button type="button" (click)="rename(category)" [disabled]="loading() || working()">
+            Düzenle
+          </button>
+          <button mat-button type="button" (click)="toggleActive(category)" [disabled]="loading() || working()">
+            {{ category.isActive ? 'Pasif yap' : 'Aktif yap' }}
+          </button>
+          <button mat-button type="button" (click)="remove(category)" [disabled]="loading() || working()">
+            Sil
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+</section>
