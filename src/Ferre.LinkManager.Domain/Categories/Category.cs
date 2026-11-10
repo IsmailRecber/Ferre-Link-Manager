@@ -26,19 +26,45 @@ public sealed class Category : AggregateRoot
     public void Rename(string? name)
     {
         EnsureNotDeleted();
-        Name = CategoryName.Create(name);
+
+        var newName = CategoryName.Create(name);
+
+        // Nothing changed, so nothing is recorded.
+        if (newName == Name)
+        {
+            return;
+        }
+
+        var oldName = Name;
+        Name = newName;
+
+        RaiseDomainEvent(new CategoryRenamed(Id, oldName.Value, newName.Value));
     }
 
     public void Activate()
     {
         EnsureNotDeleted();
+
+        if (IsActive)
+        {
+            return;
+        }
+
         IsActive = true;
+        RaiseDomainEvent(new CategoryActivated(Id, Name.Value));
     }
 
     public void Deactivate()
     {
         EnsureNotDeleted();
+
+        if (!IsActive)
+        {
+            return;
+        }
+
         IsActive = false;
+        RaiseDomainEvent(new CategoryDeactivated(Id, Name.Value));
     }
 
     public void Delete()

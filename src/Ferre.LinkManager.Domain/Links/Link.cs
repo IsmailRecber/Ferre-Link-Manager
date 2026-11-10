@@ -58,13 +58,28 @@ public sealed class Link : AggregateRoot
     public void Activate()
     {
         EnsureNotDeleted();
+
+        // Nothing changed, so nothing is recorded.
+        if (IsActive)
+        {
+            return;
+        }
+
         IsActive = true;
+        RaiseDomainEvent(new LinkActivated(Id, Title, Url.Value));
     }
 
     public void Deactivate()
     {
         EnsureNotDeleted();
+
+        if (!IsActive)
+        {
+            return;
+        }
+
         IsActive = false;
+        RaiseDomainEvent(new LinkDeactivated(Id, Title, Url.Value));
     }
 
     public void Delete()

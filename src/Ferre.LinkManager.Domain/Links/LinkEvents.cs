@@ -12,6 +12,16 @@ public sealed record LinkUpdated(Guid LinkId, string Title, string Url) : IDomai
     public DateTime OccurredOnUtc { get; } = DateTime.UtcNow;
 }
 
+public sealed record LinkActivated(Guid LinkId, string Title, string Url) : IDomainEvent
+{
+    public DateTime OccurredOnUtc { get; } = DateTime.UtcNow;
+}
+
+public sealed record LinkDeactivated(Guid LinkId, string Title, string Url) : IDomainEvent
+{
+    public DateTime OccurredOnUtc { get; } = DateTime.UtcNow;
+}
+
 public sealed record LinkDeleted(Guid LinkId, string Title, string Url) : IDomainEvent
 {
     public DateTime OccurredOnUtc { get; } = DateTime.UtcNow;

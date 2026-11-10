@@ -31,8 +31,13 @@ export interface AuditFilter {
 export const AUDIT_ACTIONS = [
   { value: 'Link.Created', label: 'Link oluşturuldu' },
   { value: 'Link.Updated', label: 'Link güncellendi' },
+  { value: 'Link.Activated', label: 'Link aktif yapıldı' },
+  { value: 'Link.Deactivated', label: 'Link pasif yapıldı' },
   { value: 'Link.Deleted', label: 'Link silindi' },
   { value: 'Category.Created', label: 'Kategori oluşturuldu' },
+  { value: 'Category.Renamed', label: 'Kategori yeniden adlandırıldı' },
+  { value: 'Category.Activated', label: 'Kategori aktif yapıldı' },
+  { value: 'Category.Deactivated', label: 'Kategori pasif yapıldı' },
   { value: 'Category.Deleted', label: 'Kategori silindi' },
   { value: 'User.Activated', label: 'Kullanıcı aktif yapıldı' },
   { value: 'User.Deactivated', label: 'Kullanıcı pasif yapıldı' },
