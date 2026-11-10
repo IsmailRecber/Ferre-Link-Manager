@@ -112,6 +112,27 @@ public sealed class IdentityService : IIdentityService
         return new PendingConfirmationUser(user.Id, user.Email);
     }
 
+    public async Task<IReadOnlyDictionary<Guid, string>> GetEmailsAsync(
+    IReadOnlyCollection<Guid> userIds, CancellationToken cancellationToken)
+    {
+        var ids = userIds.Distinct().ToArray();
+
+        if (ids.Length == 0)
+        {
+            return new Dictionary<Guid, string>();
+        }
+
+        var users = await _userManager.Users
+            .AsNoTracking()
+            .Where(user => ids.Contains(user.Id))
+            .Select(user => new { user.Id, user.Email })
+            .ToListAsync(cancellationToken);
+
+        return users
+            .Where(user => !string.IsNullOrWhiteSpace(user.Email))
+            .ToDictionary(user => user.Id, user => user.Email!);
+    }
+
     public async Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken)
     {
         var users = await _userManager.Users

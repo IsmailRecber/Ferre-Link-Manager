@@ -47,6 +47,12 @@ public interface IIdentityService
     Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken);
 
     /// <summary>
+    /// Returns the e-mail address of each given user. Users that do not exist are left out.
+    /// </summary>
+    Task<IReadOnlyDictionary<Guid, string>> GetEmailsAsync(
+        IReadOnlyCollection<Guid> userIds, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Activates or deactivates a user. Deactivating also invalidates the user's existing sessions.
     /// </summary>
     Task<UserStateChange> SetUserActiveAsync(Guid userId, bool isActive, CancellationToken cancellationToken);

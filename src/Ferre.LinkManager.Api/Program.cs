@@ -1,4 +1,5 @@
 using Ferre.LinkManager.Api;
+using Ferre.LinkManager.Api.Features.Audit;
 using Ferre.LinkManager.Api.Features.Categories;
 using Ferre.LinkManager.Api.Features.Links;
 using Ferre.LinkManager.Api.Features.Users;
@@ -42,6 +43,7 @@ app.MapAuthEndpoints();
 app.MapCategoryEndpoints();
 app.MapLinkEndpoints();
 app.MapUserManagementEndpoints();
+app.MapAuditEndpoints();
 
 app.Run();
 

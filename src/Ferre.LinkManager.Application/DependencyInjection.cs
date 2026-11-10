@@ -21,6 +21,7 @@ using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Links;
 using Microsoft.Extensions.DependencyInjection;
 using Ferre.LinkManager.Application.Users.ResendVerificationByEmail;
+using Ferre.LinkManager.Application.Audit.GetAuditLogs;
 
 namespace Ferre.LinkManager.Application;
 
@@ -48,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<SetUserActiveHandler>();
 
         // One class listens to several events, so each event type points to the same instance.
+        services.AddScoped<GetAuditLogsHandler>();
         services.AddScoped<AuditEventHandler>();
         services.AddScoped<IEventHandler<LinkCreated>>(sp => sp.GetRequiredService<AuditEventHandler>());
         services.AddScoped<IEventHandler<LinkUpdated>>(sp => sp.GetRequiredService<AuditEventHandler>());

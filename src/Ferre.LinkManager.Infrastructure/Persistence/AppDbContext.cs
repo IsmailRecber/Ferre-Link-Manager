@@ -30,6 +30,8 @@ public class AppDbContext
 
     IQueryable<Category> IReadDbContext.Categories => Categories;
 
+    IQueryable<AuditLog> IReadDbContext.AuditLogs => AuditLogs;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

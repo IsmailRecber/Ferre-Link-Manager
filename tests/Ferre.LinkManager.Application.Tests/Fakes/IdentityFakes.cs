@@ -38,6 +38,10 @@ public sealed class FakeIdentityService : IIdentityService
     string email, CancellationToken cancellationToken) =>
     Task.FromResult(PendingUser);
 
+    public Task<IReadOnlyDictionary<Guid, string>> GetEmailsAsync(
+    IReadOnlyCollection<Guid> userIds, CancellationToken cancellationToken) =>
+    Task.FromResult<IReadOnlyDictionary<Guid, string>>(new Dictionary<Guid, string>());
+
     public Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<UserSummary>>(Users);
 
