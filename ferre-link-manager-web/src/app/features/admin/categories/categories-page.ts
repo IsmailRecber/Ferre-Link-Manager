@@ -8,6 +8,7 @@ import { getErrorCodes, toMessages } from '../../../core/api/api-errors';
 import { ConfirmService } from '../../../shared/confirm/confirm.service';
 import { CategoriesService, Category } from './categories.service';
 import { CategoryFormData, CategoryFormDialog } from './category-form-dialog';
+import { RouterLink } from '@angular/router';
 
 interface PageMessage {
   kind: 'success' | 'error';
@@ -18,7 +19,7 @@ type FailureContext = 'save' | 'delete';
 
 @Component({
   selector: 'app-categories-page',
-  imports: [MatButtonModule, MatProgressBarModule],
+  imports: [MatButtonModule, MatProgressBarModule, RouterLink],
   templateUrl: './categories-page.html',
 })
 export class CategoriesPage implements OnInit {

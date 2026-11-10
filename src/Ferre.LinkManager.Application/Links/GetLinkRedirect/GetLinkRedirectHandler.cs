@@ -1,4 +1,5 @@
 ﻿using Ferre.LinkManager.Application.Common.Abstractions;
+using Ferre.LinkManager.Application.Common.Authorization;
 using Ferre.LinkManager.Application.Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,13 +27,16 @@ public sealed class GetLinkRedirectHandler
             throw new NotFoundException("Link was not found.");
         }
 
+        // Admins may open every active link. Other roles only the links that were given to them.
+        var seesEverything = roles.Contains(Roles.Admin, StringComparer.OrdinalIgnoreCase);
+
         var url = await (
                 from link in _db.Links
                 join category in _db.Categories on link.CategoryId equals category.Id
                 where link.Id == query.Id
                       && link.IsActive && !link.IsDeleted
                       && category.IsActive && !category.IsDeleted
-                      && link.RoleAccesses.Any(access => roles.Contains(access.RoleName))
+                      && (seesEverything || link.RoleAccesses.Any(access => roles.Contains(access.RoleName)))
                 select link.Url)
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);

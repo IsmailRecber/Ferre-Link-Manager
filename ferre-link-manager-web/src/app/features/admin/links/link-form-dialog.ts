@@ -135,6 +135,9 @@ const atLeastOneRole: ValidatorFn = (group: AbstractControl): ValidationErrors |
             @if (form.controls.roles.touched && form.controls.roles.hasError('noRole')) {
               <p class="dialog-field-error">En az bir rol seçin.</p>
             }
+                          <p class="dialog-field-hint">
+              Yöneticiler her bağlantıyı görür. "Kullanıcı" seçilirse normal kullanıcılar da görür.
+            </p>
           </div>
 
           @if (error(); as message) {
@@ -179,6 +182,12 @@ const atLeastOneRole: ValidatorFn = (group: AbstractControl): ValidationErrors |
         margin: 4px 0 0;
         font-size: 0.8rem;
         color: var(--mat-sys-error, #b3261e);
+      }
+
+            .dialog-field-hint {
+        margin: 6px 0 0;
+        font-size: 0.8rem;
+        color: var(--mat-sys-on-surface-variant, #5f6368);
       }
     `,
   ],

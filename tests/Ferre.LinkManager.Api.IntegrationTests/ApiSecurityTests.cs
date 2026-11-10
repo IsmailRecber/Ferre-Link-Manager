@@ -156,30 +156,69 @@ public class ApiSecurityTests : IClassFixture<TestApiFactory>, IAsyncLifetime
     // ---------- Safe redirect and visibility ----------
 
     [Fact]
-    public async Task Go_RedirectsAuthorizedUser_AndHidesLinkFromOthers()
+    public async Task Go_RedirectsAuthorizedUsers_AndHidesAdminOnlyLinksFromUsers()
     {
         var admin = await LoginAsync(_adminEmail);
         var categoryId = await CreateCategoryAsync(admin);
-        var linkId = await CreateLinkAsync(admin, categoryId, "https://example.com", "User");
+        var userLinkId = await CreateLinkAsync(admin, categoryId, "https://example.com", "User");
+        var adminOnlyLinkId = await CreateLinkAsync(admin, categoryId, "https://admin.example.com", "Admin");
 
         var user = await LoginAsync(_userEmail);
 
-        // The user's role is allowed: redirected to the URL stored in the database.
-        var allowed = await user.GetAsync($"/api/links/{linkId}/go");
+        // A link given to the User role: the user is redirected to the URL stored in the database.
+        var allowed = await user.GetAsync($"/api/links/{userLinkId}/go");
         Assert.Equal(HttpStatusCode.Redirect, allowed.StatusCode);
         Assert.Equal("https://example.com", allowed.Headers.Location!.OriginalString);
 
-        // The admin only has the Admin role, which this link does not allow: it looks like it does not exist.
-        var denied = await admin.GetAsync($"/api/links/{linkId}/go");
-        Assert.Equal(HttpStatusCode.NotFound, denied.StatusCode);
+        // A link for admins only looks like it does not exist to a normal user.
+        var hidden = await user.GetAsync($"/api/links/{adminOnlyLinkId}/go");
+        Assert.Equal(HttpStatusCode.NotFound, hidden.StatusCode);
+
+        // The admin can open both.
+        var adminOpensUserLink = await admin.GetAsync($"/api/links/{userLinkId}/go");
+        Assert.Equal(HttpStatusCode.Redirect, adminOpensUserLink.StatusCode);
+
+        var adminOpensOwnLink = await admin.GetAsync($"/api/links/{adminOnlyLinkId}/go");
+        Assert.Equal(HttpStatusCode.Redirect, adminOpensOwnLink.StatusCode);
+        Assert.Equal("https://admin.example.com", adminOpensOwnLink.Headers.Location!.OriginalString);
 
         // Not signed in.
-        var anonymous = await _factory.CreateApiClient().GetAsync($"/api/links/{linkId}/go");
+        var anonymous = await _factory.CreateApiClient().GetAsync($"/api/links/{userLinkId}/go");
         Assert.Equal(HttpStatusCode.Unauthorized, anonymous.StatusCode);
 
         // Unknown id.
         var unknown = await user.GetAsync($"/api/links/{Guid.NewGuid()}/go");
         Assert.Equal(HttpStatusCode.NotFound, unknown.StatusCode);
+    }
+
+    [Fact]
+    public async Task MyLinks_AdminSeesEveryLink_UserSeesOnlyTheirs()
+    {
+        var admin = await LoginAsync(_adminEmail);
+        var categoryId = await CreateCategoryAsync(admin);
+        var userLinkId = await CreateLinkAsync(admin, categoryId, "https://example.com", "User");
+        var adminOnlyLinkId = await CreateLinkAsync(admin, categoryId, "https://admin.example.com", "Admin");
+
+        var adminIds = await ReadMyLinkIdsAsync(admin);
+        Assert.Contains(userLinkId, adminIds);
+        Assert.Contains(adminOnlyLinkId, adminIds);
+
+        var user = await LoginAsync(_userEmail);
+        var userIds = await ReadMyLinkIdsAsync(user);
+        Assert.Contains(userLinkId, userIds);
+        Assert.DoesNotContain(adminOnlyLinkId, userIds);
+    }
+
+    private static async Task<List<Guid>> ReadMyLinkIdsAsync(ApiClient client)
+    {
+        var response = await client.GetAsync("/api/links/my");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        return json.RootElement.EnumerateArray()
+            .Select(element => element.GetProperty("id").GetGuid())
+            .ToList();
     }
 
     [Fact]

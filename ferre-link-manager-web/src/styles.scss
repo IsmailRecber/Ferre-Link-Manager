@@ -346,4 +346,44 @@ body {
   gap: 12px;
   margin: 20px 0 8px;
 }
+/* ---------- Admin: links grouped by category ---------- */
+.admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 12px;
+
+  mat-form-field {
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+}
+
+.admin-group {
+  margin-top: 24px;
+}
+
+.admin-group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+}
+
+.admin-empty-group {
+  margin: 8px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-low, #f4f4f8);
+  color: var(--mat-sys-on-surface-variant, #5f6368);
+}
 }

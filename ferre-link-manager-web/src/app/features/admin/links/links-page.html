@@ -3,7 +3,7 @@
     <div>
       <h2>Linkler</h2>
       @if (!loading() && links().length > 0) {
-        <p class="auth-note">{{ links().length }} link</p>
+        <p class="auth-note">{{ links().length }} link, {{ categories().length }} kategori</p>
       }
     </div>
 
@@ -22,6 +22,36 @@
     </div>
   </div>
 
+  @if (categories().length > 0) {
+    <div class="admin-filters">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Kategori</mat-label>
+        <mat-select [value]="filterCategoryId()" (selectionChange)="filterCategoryId.set($event.value)">
+          <mat-option value="">Tüm kategoriler</mat-option>
+          @for (category of categories(); track category.id) {
+            <mat-option [value]="category.id">{{ category.name }} ({{ countOf(category.id) }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Ara</mat-label>
+        <input
+          matInput
+          type="search"
+          placeholder="Başlık veya adres"
+          [value]="search()"
+          (input)="onSearch($event)"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      @if (hasFilter()) {
+        <button mat-stroked-button type="button" (click)="clearFilters()">Filtreleri temizle</button>
+      }
+    </div>
+  }
+
   @if (loading() || working()) {
     <mat-progress-bar mode="indeterminate" />
   }
@@ -37,50 +67,81 @@
     </div>
   }
 
-  @if (!loading() && activeCategories().length === 0 && message()?.kind !== 'error') {
+  @if (!loading() && categories().length === 0 && message()?.kind !== 'error') {
     <div class="auth-message auth-error" role="status">
-      <p>Link ekleyebilmek için önce <strong>Kategoriler</strong> sekmesinden aktif bir kategori oluşturun.</p>
+      <p>Link ekleyebilmek için önce <strong>Kategoriler</strong> sekmesinden bir kategori oluşturun.</p>
+    </div>
+  } @else if (!loading() && activeCategories().length === 0 && message()?.kind !== 'error') {
+    <div class="auth-message auth-error" role="status">
+      <p>Tüm kategoriler pasif. Link eklemek için bir kategoriyi aktif yapın.</p>
     </div>
   }
 
-  @if (!loading() && links().length === 0 && message()?.kind !== 'error') {
+  @if (!loading() && categories().length > 0 && groups().length === 0) {
     <div class="links-empty">
-      <p><strong>Henüz link yok.</strong></p>
-      <p>Kullanıcıların erişeceği ilk bağlantıyı ekleyin.</p>
+      <p><strong>Aramanızla eşleşen bağlantı yok.</strong></p>
+      <button mat-stroked-button type="button" (click)="clearFilters()">Filtreleri temizle</button>
     </div>
   }
 
-  <ul class="admin-list">
-    @for (link of links(); track link.id) {
-      <li class="admin-row">
-        <div class="admin-row-main admin-row-stack">
-          <div class="admin-row-line">
-            <span class="admin-row-title">{{ link.title }}</span>
-            <span class="admin-badge" [class.admin-badge-off]="!link.isActive">
-              {{ link.isActive ? 'Aktif' : 'Pasif' }}
-            </span>
-          </div>
-          <div class="admin-meta">Kategori: {{ link.categoryName }}</div>
-          <div class="admin-meta admin-url">{{ link.url }}</div>
-          <div class="admin-chips">
-            @for (role of link.roles; track role) {
-              <span class="admin-chip">{{ roleLabel(role) }}</span>
-            }
-          </div>
+  @for (group of groups(); track group.category.id) {
+    <section class="admin-group">
+      <div class="admin-group-header">
+        <div class="admin-row-line">
+          <h3>{{ group.category.name }}</h3>
+          <span class="admin-badge" [class.admin-badge-off]="!group.category.isActive">
+            {{ group.category.isActive ? 'Aktif' : 'Pasif' }}
+          </span>
+          <span class="admin-chip">{{ group.total }} bağlantı</span>
         </div>
 
-        <div class="admin-row-actions">
-          <button mat-button type="button" (click)="edit(link)" [disabled]="loading() || working()">
-            Düzenle
-          </button>
-          <button mat-button type="button" (click)="toggleActive(link)" [disabled]="loading() || working()">
-            {{ link.isActive ? 'Pasif yap' : 'Aktif yap' }}
-          </button>
-          <button mat-button type="button" (click)="remove(link)" [disabled]="loading() || working()">
-            Sil
-          </button>
-        </div>
-      </li>
-    }
-  </ul>
+        <button
+          mat-button
+          type="button"
+          (click)="create(group.category.id)"
+          [disabled]="loading() || working() || !group.category.isActive"
+          [attr.title]="group.category.isActive ? null : 'Pasif kategoriye link eklenemez.'"
+        >
+          Bu kategoriye link ekle
+        </button>
+      </div>
+
+      @if (group.links.length === 0) {
+        <p class="admin-empty-group">Bu kategoride bağlantı yok.</p>
+      }
+
+      <ul class="admin-list">
+        @for (link of group.links; track link.id) {
+          <li class="admin-row">
+            <div class="admin-row-main admin-row-stack">
+              <div class="admin-row-line">
+                <span class="admin-row-title">{{ link.title }}</span>
+                <span class="admin-badge" [class.admin-badge-off]="!link.isActive">
+                  {{ link.isActive ? 'Aktif' : 'Pasif' }}
+                </span>
+              </div>
+              <div class="admin-meta admin-url">{{ link.url }}</div>
+              <div class="admin-chips">
+                @for (role of link.roles; track role) {
+                  <span class="admin-chip">{{ roleLabel(role) }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="admin-row-actions">
+              <button mat-button type="button" (click)="edit(link)" [disabled]="loading() || working()">
+                Düzenle
+              </button>
+              <button mat-button type="button" (click)="toggleActive(link)" [disabled]="loading() || working()">
+                {{ link.isActive ? 'Pasif yap' : 'Aktif yap' }}
+              </button>
+              <button mat-button type="button" (click)="remove(link)" [disabled]="loading() || working()">
+                Sil
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  }
 </section>

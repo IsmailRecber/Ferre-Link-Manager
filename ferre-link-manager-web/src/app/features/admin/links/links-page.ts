@@ -2,7 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { getErrorCodes, toMessages } from '../../../core/api/api-errors';
 import { ConfirmService } from '../../../shared/confirm/confirm.service';
@@ -15,11 +19,25 @@ interface PageMessage {
   text: string;
 }
 
+interface LinkGroup {
+  category: Category;
+  /** The links shown now (after the search). */
+  links: AdminLink[];
+  /** All links of the category, whatever the search says. */
+  total: number;
+}
+
 type FailureContext = 'form' | 'action';
 
 @Component({
   selector: 'app-links-page',
-  imports: [MatButtonModule, MatProgressBarModule],
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatSelectModule,
+  ],
   templateUrl: './links-page.html',
 })
 export class LinksPage implements OnInit {
@@ -27,6 +45,7 @@ export class LinksPage implements OnInit {
   private readonly categoriesService = inject(CategoriesService);
   private readonly confirmService = inject(ConfirmService);
   private readonly dialog = inject(MatDialog);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly links = signal<AdminLink[]>([]);
   protected readonly categories = signal<Category[]>([]);
@@ -34,14 +53,84 @@ export class LinksPage implements OnInit {
   protected readonly working = signal(false);
   protected readonly message = signal<PageMessage | null>(null);
 
+  // Filters. An empty category id means "all categories".
+  protected readonly filterCategoryId = signal('');
+  protected readonly search = signal('');
+
   protected readonly activeCategories = computed(() => this.categories().filter((c) => c.isActive));
 
+  protected readonly hasFilter = computed(
+    () => this.filterCategoryId() !== '' || this.search().trim() !== '',
+  );
+
+  private readonly countsByCategory = computed(() => {
+    const counts = new Map<string, number>();
+
+    for (const link of this.links()) {
+      counts.set(link.categoryId, (counts.get(link.categoryId) ?? 0) + 1);
+    }
+
+    return counts;
+  });
+
+  /** Every category is a group, even an empty one. A search keeps only the groups that have a match. */
+  protected readonly groups = computed<LinkGroup[]>(() => {
+    const term = this.search().trim().toLocaleLowerCase('tr');
+    const selected = this.filterCategoryId();
+    const all = this.links();
+    const result: LinkGroup[] = [];
+
+    for (const category of this.categories()) {
+      if (selected && category.id !== selected) {
+        continue;
+      }
+
+      const inCategory = all.filter((link) => link.categoryId === category.id);
+
+      const links = term
+        ? inCategory.filter(
+            (link) =>
+              link.title.toLocaleLowerCase('tr').includes(term) ||
+              link.url.toLocaleLowerCase('tr').includes(term),
+          )
+        : inCategory;
+
+      if (term && links.length === 0) {
+        continue;
+      }
+
+      result.push({ category, links, total: inCategory.length });
+    }
+
+    return result;
+  });
+
   async ngOnInit(): Promise<void> {
+    // The "see links" button on the categories page opens this page with a category already chosen.
+    const preset = this.route.snapshot.queryParamMap.get('category');
+
+    if (preset) {
+      this.filterCategoryId.set(preset);
+    }
+
     await this.load();
   }
 
   protected roleLabel(role: string): string {
     return roleLabel(role);
+  }
+
+  protected countOf(categoryId: string): number {
+    return this.countsByCategory().get(categoryId) ?? 0;
+  }
+
+  protected onSearch(event: Event): void {
+    this.search.set((event.target as HTMLInputElement).value);
+  }
+
+  protected clearFilters(): void {
+    this.filterCategoryId.set('');
+    this.search.set('');
   }
 
   protected async load(): Promise<void> {
@@ -54,8 +143,7 @@ export class LinksPage implements OnInit {
         this.categoriesService.getAll(),
       ]);
 
-      this.links.set(links);
-      this.categories.set(categories);
+      this.applyData(links, categories);
     } catch (error) {
       this.message.set({ kind: 'error', text: toMessages(getErrorCodes(error))[0] });
     } finally {
@@ -63,11 +151,15 @@ export class LinksPage implements OnInit {
     }
   }
 
-  protected async create(): Promise<void> {
+  /** Opens the new-link form. A category can be given in advance (the "add to this category" button). */
+  protected async create(presetCategoryId?: string): Promise<void> {
+    const preferred = presetCategoryId ?? this.filterCategoryId();
+    const categoryId = this.activeCategories().some((c) => c.id === preferred) ? preferred : '';
+
     const saved = await this.openForm({
       title: 'Yeni link',
       categories: this.activeCategories(),
-      initial: { title: '', url: '', categoryId: '', roles: ['User'] },
+      initial: { title: '', url: '', categoryId, roles: ['User'] },
       confirm: {
         title: 'Link oluştur',
         message: (value) => `"${value.title}" bağlantısı oluşturulsun mu?`,
@@ -146,6 +238,18 @@ export class LinksPage implements OnInit {
     return (await firstValueFrom(reference.afterClosed())) === true;
   }
 
+  private applyData(links: AdminLink[], categories: Category[]): void {
+    this.links.set(links);
+    this.categories.set(categories);
+
+    // The chosen category may have been deleted meanwhile.
+    const selected = this.filterCategoryId();
+
+    if (selected && !categories.some((category) => category.id === selected)) {
+      this.filterCategoryId.set('');
+    }
+  }
+
   /** After a change that was saved in a window: shows the success message and re-reads the data. */
   private async finishChange(successText: string): Promise<void> {
     this.message.set({ kind: 'success', text: successText });
@@ -184,8 +288,7 @@ export class LinksPage implements OnInit {
         this.categoriesService.getAll(),
       ]);
 
-      this.links.set(links);
-      this.categories.set(categories);
+      this.applyData(links, categories);
     } catch {
       // The old data stays on screen. The message already tells the user what happened.
     }

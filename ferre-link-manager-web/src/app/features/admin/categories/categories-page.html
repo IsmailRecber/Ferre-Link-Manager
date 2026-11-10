@@ -42,21 +42,45 @@
   <ul class="admin-list">
     @for (category of categories(); track category.id) {
       <li class="admin-row">
-        <div class="admin-row-main">
-          <span class="admin-row-title">{{ category.name }}</span>
-          <span class="admin-badge" [class.admin-badge-off]="!category.isActive">
-            {{ category.isActive ? 'Aktif' : 'Pasif' }}
-          </span>
+        <div class="admin-row-main admin-row-stack">
+          <div class="admin-row-line">
+            <span class="admin-row-title">{{ category.name }}</span>
+            <span class="admin-badge" [class.admin-badge-off]="!category.isActive">
+              {{ category.isActive ? 'Aktif' : 'Pasif' }}
+            </span>
+            <span class="admin-chip">{{ category.linkCount }} bağlantı</span>
+          </div>
+          @if (category.linkCount > 0) {
+            <div class="admin-meta">
+              Silmek için önce bağlantıları silin veya başka bir kategoriye taşıyın.
+            </div>
+          }
         </div>
 
         <div class="admin-row-actions">
+          @if (category.linkCount > 0) {
+            <a
+              mat-button
+              routerLink="/admin/links"
+              [queryParams]="{ category: category.id }"
+              [attr.aria-label]="category.name + ' kategorisindeki bağlantıları gör'"
+            >
+              Bağlantıları gör
+            </a>
+          }
           <button mat-button type="button" (click)="rename(category)" [disabled]="loading() || working()">
             Düzenle
           </button>
           <button mat-button type="button" (click)="toggleActive(category)" [disabled]="loading() || working()">
             {{ category.isActive ? 'Pasif yap' : 'Aktif yap' }}
           </button>
-          <button mat-button type="button" (click)="remove(category)" [disabled]="loading() || working()">
+          <button
+            mat-button
+            type="button"
+            (click)="remove(category)"
+            [disabled]="loading() || working() || category.linkCount > 0"
+            [attr.title]="category.linkCount > 0 ? 'Bağlantısı olan kategori silinemez.' : null"
+          >
             Sil
           </button>
         </div>

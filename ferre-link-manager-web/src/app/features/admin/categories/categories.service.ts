@@ -6,6 +6,8 @@ export interface Category {
   id: string;
   name: string;
   isActive: boolean;
+  /** Links in this category, including inactive ones. A category with links cannot be deleted. */
+  linkCount: number;
 }
 
 @Injectable({ providedIn: 'root' })
