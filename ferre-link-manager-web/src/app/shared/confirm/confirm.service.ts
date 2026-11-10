@@ -11,6 +11,7 @@ export class ConfirmService {
   async confirm(data: ConfirmDialogData): Promise<boolean> {
     const reference = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
       data,
+      role: 'alertdialog',
       width: '420px',
       maxWidth: '92vw',
       autoFocus: false,

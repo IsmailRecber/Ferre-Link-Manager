@@ -284,3 +284,38 @@ body {
   background: var(--mat-sys-secondary-container, #e8eaf6);
   color: var(--mat-sys-on-secondary-container, #1a1c3a);
 }
+
+/* ---------- Accessibility ---------- */
+.skip-link {
+  position: absolute;
+  top: -56px;
+  left: 8px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  background: var(--mat-sys-primary, #3f51b5);
+  color: var(--mat-sys-on-primary, #ffffff);
+  transition: top 0.15s ease;
+
+  &:focus {
+    top: 8px;
+  }
+}
+
+// The main area receives focus from the skip link only. It should not show an outline box.
+.shell-content:focus {
+  outline: none;
+}
+
+// Users who turned animations off in their system settings get no motion.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -43,6 +43,12 @@ export class Shell {
     );
   }
 
+  /** The "skip to content" link: moves the keyboard focus straight to the main content. */
+  protected skipToContent(event: Event): void {
+    event.preventDefault();
+    document.getElementById('main-content')?.focus();
+  }
+
   protected async logout(): Promise<void> {
     const confirmed = await this.confirmService.confirm({
       title: 'Çıkış yap',

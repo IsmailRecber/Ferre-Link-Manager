@@ -10,9 +10,15 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       <h1>Yönetim</h1>
 
       <nav class="admin-tabs" aria-label="Yönetim bölümleri">
-        <a mat-button routerLink="categories" routerLinkActive="active">Kategoriler</a>
-        <a mat-button routerLink="links" routerLinkActive="active">Linkler</a>
-        <a mat-button routerLink="users" routerLinkActive="active">Kullanıcılar</a>
+        <a mat-button routerLink="categories" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Kategoriler
+        </a>
+        <a mat-button routerLink="links" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Linkler
+        </a>
+        <a mat-button routerLink="users" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Kullanıcılar
+        </a>
       </nav>
 
       <router-outlet />

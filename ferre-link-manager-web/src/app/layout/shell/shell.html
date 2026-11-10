@@ -1,15 +1,23 @@
+<a class="skip-link" href="/" (click)="skipToContent($event)">İçeriğe geç</a>
+
 <mat-toolbar class="shell-toolbar">
   <a class="shell-brand" routerLink="/">
     <span class="auth-logo">F</span>
     <span class="shell-brand-name">Ferre Link Manager</span>
   </a>
 
-  <nav class="shell-nav">
-    <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+  <nav class="shell-nav" aria-label="Ana menü">
+    <a
+      mat-button
+      routerLink="/"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       Linklerim
     </a>
     @if (auth.isAdmin()) {
-      <a mat-button routerLink="/admin" routerLinkActive="active">Yönetim</a>
+      <a mat-button routerLink="/admin" routerLinkActive="active" ariaCurrentWhenActive="page">Yönetim</a>
     }
   </nav>
 
@@ -31,6 +39,6 @@
   }
 </mat-toolbar>
 
-<main class="shell-content">
+<main id="main-content" class="shell-content" tabindex="-1">
   <router-outlet />
 </main>
