@@ -318,4 +318,32 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* ---------- Admin: audit log ---------- */
+.audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 12px;
+
+  mat-form-field {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
+}
+
+.audit-time {
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant, #5f6368);
+  white-space: nowrap;
+}
+
+.audit-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0 8px;
+}
 }

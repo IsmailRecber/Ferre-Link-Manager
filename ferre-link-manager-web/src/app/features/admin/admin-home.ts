@@ -19,6 +19,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         <a mat-button routerLink="users" routerLinkActive="active" ariaCurrentWhenActive="page">
           Kullanıcılar
         </a>
+        <a mat-button routerLink="audit" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Denetim kayıtları
+        </a>
       </nav>
 
       <router-outlet />

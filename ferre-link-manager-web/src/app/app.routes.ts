@@ -58,6 +58,12 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/admin/users/users-page').then((m) => m.UsersPage),
           },
+          {
+            path: 'audit',
+            title: 'Denetim kayıtları - Yönetim' + SUFFIX,
+            loadComponent: () =>
+              import('./features/admin/audit/audit-page').then((m) => m.AuditPage),
+          },
         ],
       },
     ],

@@ -1,0 +1,106 @@
+<section>
+  <div class="admin-header">
+    <div>
+      <h2>Denetim kayıtları</h2>
+      @if (!loading() && totalCount() > 0) {
+        <p class="auth-note">{{ totalCount() }} kayıt</p>
+      }
+    </div>
+
+    <button mat-stroked-button type="button" (click)="load(page())" [disabled]="loading()">Yenile</button>
+  </div>
+
+  <form class="audit-filters" (submit)="applyFilters($event)" novalidate>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>İşlem</mat-label>
+      <mat-select [value]="action()" (selectionChange)="action.set($event.value)">
+        <mat-option value="">Tümü</mat-option>
+        @for (option of actionOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Başlangıç tarihi</mat-label>
+      <input matInput type="date" [value]="fromDate()" (input)="fromDate.set(valueOf($event))" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Bitiş tarihi</mat-label>
+      <input matInput type="date" [value]="toDate()" (input)="toDate.set(valueOf($event))" />
+    </mat-form-field>
+
+    <div class="admin-row-actions">
+      <button mat-flat-button type="submit" [disabled]="loading()">Filtrele</button>
+      <button mat-stroked-button type="button" (click)="clearFilters()" [disabled]="loading()">Temizle</button>
+    </div>
+  </form>
+
+  @if (formError(); as problem) {
+    <div class="auth-message auth-error" role="alert">
+      <p>{{ problem }}</p>
+    </div>
+  }
+
+  <p class="auth-note">Saatler bilgisayarınızın saat dilimine göre gösterilir.</p>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (error(); as message) {
+    <div class="auth-message auth-error" role="alert">
+      <p>{{ message }}</p>
+      <button mat-stroked-button type="button" (click)="load(page())">Tekrar dene</button>
+    </div>
+  } @else if (!loading() && items().length === 0) {
+    <div class="links-empty">
+      @if (hasFilter()) {
+        <p><strong>Filtrelerle eşleşen kayıt yok.</strong></p>
+        <button mat-stroked-button type="button" (click)="clearFilters()">Filtreleri temizle</button>
+      } @else {
+        <p><strong>Henüz denetim kaydı yok.</strong></p>
+        <p>Link, kategori ve kullanıcı işlemleri yapıldıkça burada listelenir.</p>
+      }
+    </div>
+  }
+
+  <ul class="admin-list">
+    @for (item of items(); track item.id) {
+      <li class="admin-row">
+        <div class="admin-row-main admin-row-stack">
+          <div class="admin-row-line">
+            <span class="admin-row-title">{{ actionLabel(item.action) }}</span>
+            <span class="audit-time">{{ formatTime(item.occurredOnUtc) }}</span>
+          </div>
+
+          <div class="admin-meta">{{ entityTypeLabel(item.entityType) }}: {{ targetName(item) }}</div>
+
+          @if (item.entityUrl) {
+            <div class="admin-meta admin-url">{{ item.entityUrl }}</div>
+          }
+
+          <div class="admin-meta">İşlemi yapan: {{ actorName(item) }}</div>
+        </div>
+      </li>
+    }
+  </ul>
+
+  @if (totalCount() > 0) {
+    <nav class="audit-pager" aria-label="Sayfalama">
+      <button mat-stroked-button type="button" (click)="goTo(page() - 1)" [disabled]="loading() || page() <= 1">
+        Önceki
+      </button>
+      <span>Sayfa {{ page() }} / {{ totalPages() }}</span>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="goTo(page() + 1)"
+        [disabled]="loading() || page() >= totalPages()"
+      >
+        Sonraki
+      </button>
+    </nav>
+  }
+</section>
