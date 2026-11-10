@@ -3,7 +3,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 const MESSAGES: Record<string, string> = {
   InvalidCredentials: 'E-posta veya parola hatalı.',
   AccountLocked: 'Çok fazla hatalı deneme yapıldı. Hesabınız geçici olarak kilitlendi, birkaç dakika sonra tekrar deneyin.',
-  EmailNotConfirmed: 'E-posta adresiniz henüz doğrulanmadı. Kayıt sırasında e-postanıza gönderilen bağlantıyı kullanın.',
+  EmailNotConfirmed: 'E-posta adresiniz henüz doğrulanmadı. Gelen kutunuzdaki bağlantıyı kullanın veya doğrulama e-postasını aşağıdan yeniden isteyin.',
+  TooManyRequests: 'Çok fazla istek gönderdiniz. Lütfen birkaç dakika bekleyip tekrar deneyin.',
   InvalidEmail: 'Geçerli bir e-posta adresi girin.',
   DuplicateEmail: 'Bu e-posta adresiyle zaten bir hesap var.',
   DuplicateUserName: 'Bu e-posta adresiyle zaten bir hesap var.',
@@ -33,6 +34,11 @@ export function getErrorCodes(error: unknown): string[] {
 
     if (Array.isArray(codes) && codes.every((code) => typeof code === 'string')) {
       return codes as string[];
+    }
+
+    // The rate limiter answers 429 without a body.
+    if (error.status === 429) {
+      return ['TooManyRequests'];
     }
   }
 

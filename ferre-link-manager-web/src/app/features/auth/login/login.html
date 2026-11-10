@@ -20,6 +20,26 @@
       </div>
     }
 
+    @if (needsVerification()) {
+      <button
+        mat-stroked-button
+        class="auth-submit"
+        type="button"
+        (click)="resend()"
+        [disabled]="busy() || resendCooldown() > 0"
+      >
+        @if (resendCooldown() > 0) {
+          Tekrar gönder ({{ resendCooldown() }} sn)
+        } @else {
+          Doğrulama e-postasını tekrar gönder
+        }
+      </button>
+    }
+
+    @if (resendMessage()) {
+      <p class="auth-note" role="status">{{ resendMessage() }}</p>
+    }
+
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <mat-form-field appearance="outline">
         <mat-label>E-posta</mat-label>

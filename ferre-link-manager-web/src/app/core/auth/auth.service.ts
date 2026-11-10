@@ -70,4 +70,8 @@ export class AuthService {
   async resendVerification(userId: string): Promise<void> {
     await firstValueFrom(this.http.post('/api/auth/resend-verification', { userId }));
   }
+
+    async resendVerificationByEmail(email: string): Promise<void> {
+    await firstValueFrom(this.http.post('/api/auth/resend-verification-by-email', { email }));
+  }
 }
