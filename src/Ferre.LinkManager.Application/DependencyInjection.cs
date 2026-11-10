@@ -20,6 +20,7 @@ using Ferre.LinkManager.Application.Users.SetUserActive;
 using Ferre.LinkManager.Domain.Categories;
 using Ferre.LinkManager.Domain.Links;
 using Microsoft.Extensions.DependencyInjection;
+using Ferre.LinkManager.Application.Users.ResendVerificationByEmail;
 
 namespace Ferre.LinkManager.Application;
 
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddScoped<IEventHandler<UserDeactivated>>(sp => sp.GetRequiredService<AuditEventHandler>());
 
         services.AddScoped<SendVerificationEmailHandler>();
+        services.AddScoped<ResendVerificationByEmailHandler>();
         services.AddScoped<IEventHandler<UserRegistered>>(sp => sp.GetRequiredService<SendVerificationEmailHandler>());
 
         return services;

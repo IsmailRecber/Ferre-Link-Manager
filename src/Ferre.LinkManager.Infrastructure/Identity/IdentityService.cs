@@ -99,6 +99,19 @@ public sealed class IdentityService : IIdentityService
         return user.Email;
     }
 
+    public async Task<PendingConfirmationUser?> FindPendingConfirmationUserAsync(
+    string email, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user is null || !user.IsActive || user.EmailConfirmed || string.IsNullOrWhiteSpace(user.Email))
+        {
+            return null;
+        }
+
+        return new PendingConfirmationUser(user.Id, user.Email);
+    }
+
     public async Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken)
     {
         var users = await _userManager.Users

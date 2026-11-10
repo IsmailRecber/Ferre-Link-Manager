@@ -33,6 +33,7 @@ using (var scope = app.Services.CreateScope())
 // Order matters: errors first, then authentication, then authorization.
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -9,6 +9,8 @@ public sealed class FakeIdentityService : IIdentityService
     public string? Token { get; set; } = "token-123";
     public bool ConfirmSucceeds { get; set; } = true;
     public string? PendingEmail { get; set; } = "user@example.com";
+
+    public PendingConfirmationUser? PendingUser { get; set; } = new(Guid.NewGuid(), "user@example.com");
     public UserStateChange SetActiveResult { get; set; } = UserStateChange.Changed;
     public List<UserSummary> Users { get; } = new();
     public int RegisterCalls { get; private set; }
@@ -32,6 +34,9 @@ public sealed class FakeIdentityService : IIdentityService
 
     public Task<string?> GetPendingConfirmationEmailAsync(Guid userId, CancellationToken cancellationToken) =>
         Task.FromResult(PendingEmail);
+    public Task<PendingConfirmationUser?> FindPendingConfirmationUserAsync(
+    string email, CancellationToken cancellationToken) =>
+    Task.FromResult(PendingUser);
 
     public Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<UserSummary>>(Users);

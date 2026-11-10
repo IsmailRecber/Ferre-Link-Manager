@@ -2,16 +2,21 @@
 using Ferre.LinkManager.Api.Security;
 using Ferre.LinkManager.Application.Users.ConfirmEmail;
 using Ferre.LinkManager.Application.Users.Register;
+using Ferre.LinkManager.Application.Users.ResendVerificationByEmail;
 using Ferre.LinkManager.Application.Users.ResendVerificationEmail;
 using Ferre.LinkManager.Infrastructure.Identity;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Ferre.LinkManager.Api.Features.Users;
 
 public static class AuthEndpoints
 {
+    private static readonly TimeSpan ResendCooldown = TimeSpan.FromSeconds(60);
+
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
         // The client calls this to get the XSRF-TOKEN cookie, then sends it back in the X-XSRF-TOKEN header.
@@ -21,7 +26,7 @@ public static class AuthEndpoints
 
             httpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!, new CookieOptions
             {
-                HttpOnly = false,
+                HttpOnly = false, // JavaScript must be able to read it
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 IsEssential = true
@@ -64,8 +69,40 @@ public static class AuthEndpoints
         {
             await handler.HandleAsync(new ResendVerificationEmailCommand(request.UserId), cancellationToken);
 
+            // Always the same answer, so nobody can learn whether an account exists.
             return Results.Accepted();
         });
+
+        // Used from the login page, where the user id is not known. It is rate limited per IP address,
+        // and one e-mail address receives at most one message per minute.
+        auth.MapPost("/resend-verification-by-email", async (
+                ResendVerificationByEmailRequest request,
+                ResendVerificationByEmailHandler handler,
+                IMemoryCache cache,
+                CancellationToken cancellationToken) =>
+        {
+            var email = request.Email?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(email) && email.Length <= 256)
+            {
+                var key = "resend-verification:" + email.ToUpperInvariant();
+
+                // Inside the waiting period: same answer, nothing is sent.
+                if (cache.TryGetValue(key, out _))
+                {
+                    return Results.Accepted();
+                }
+
+                cache.Set(key, true, ResendCooldown);
+            }
+
+            await handler.HandleAsync(
+                new ResendVerificationByEmailCommand(request.Email ?? string.Empty), cancellationToken);
+
+            // Always the same answer, so nobody can learn whether an account exists.
+            return Results.Accepted();
+        })
+            .RequireRateLimiting(RateLimitPolicies.ResendVerification);
 
         auth.MapPost("/login", async (
             LoginRequest request,

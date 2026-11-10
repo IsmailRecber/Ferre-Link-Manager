@@ -1,8 +1,10 @@
-﻿using Ferre.LinkManager.Api.Errors;
+﻿using System.Threading.RateLimiting;
+using Ferre.LinkManager.Api.Errors;
 using Ferre.LinkManager.Api.Security;
 using Ferre.LinkManager.Application.Common.Abstractions;
 using Ferre.LinkManager.Application.Common.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ferre.LinkManager.Api;
 
@@ -11,10 +13,27 @@ public static class DependencyInjection
     public static IServiceCollection AddApi(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
+        services.AddMemoryCache();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
+
+        // Limits requests per client IP address. Too many requests are answered with 429.
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddPolicy(RateLimitPolicies.ResendVerification, httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(10),
+                        QueueLimit = 0
+                    }));
+        });
 
         services.AddAntiforgery(options =>
         {

@@ -4,6 +4,8 @@ public sealed record RegisterUserResult(bool Succeeded, Guid? UserId, IReadOnlyC
 
 public sealed record ConfirmEmailResult(bool Succeeded);
 
+public sealed record PendingConfirmationUser(Guid UserId, string Email);
+
 public sealed record UserSummary(
     Guid Id,
     string Email,
@@ -36,6 +38,11 @@ public interface IIdentityService
     /// Returns the e-mail of an active, not yet confirmed user. Returns null in every other case.
     /// </summary>
     Task<string?> GetPendingConfirmationEmailAsync(Guid userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Finds an active, not yet confirmed user by e-mail address. Returns null in every other case.
+    /// </summary>
+    Task<PendingConfirmationUser?> FindPendingConfirmationUserAsync(string email, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<UserSummary>> GetUsersAsync(CancellationToken cancellationToken);
 

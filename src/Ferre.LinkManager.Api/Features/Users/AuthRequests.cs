@@ -8,4 +8,6 @@ public sealed record ConfirmEmailRequest(Guid UserId, string Token);
 
 public sealed record ResendVerificationEmailRequest(Guid UserId);
 
+public sealed record ResendVerificationByEmailRequest(string Email);
+
 public sealed record MeResponse(Guid? UserId, string? Email, string[] Roles);
