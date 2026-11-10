@@ -4,6 +4,7 @@ using Ferre.LinkManager.Api.Features.Categories;
 using Ferre.LinkManager.Api.Features.Links;
 using Ferre.LinkManager.Api.Features.Users;
 using Ferre.LinkManager.Api.Observability;
+using Ferre.LinkManager.Api.Security;
 using Ferre.LinkManager.Application;
 using Ferre.LinkManager.Infrastructure;
 using Ferre.LinkManager.Infrastructure.Identity;
@@ -31,19 +32,44 @@ using (var scope = app.Services.CreateScope())
     await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
 }
 
-// Order matters: errors first, then authentication, then authorization.
+// Security headers go first, so even error answers carry them.
+app.UseSecurityHeaders();
+
+// Order matters: errors first, then files, then rate limiting, authentication and authorization.
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+
+var staticFileOptions = new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        // index.html names the current script files, so it must never be cached.
+        if (string.Equals(context.File.Name, "index.html", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Context.Response.Headers.CacheControl = "no-cache, no-store";
+        }
+    }
+};
+
+// Serves the Angular files from wwwroot (they exist only after "ng build").
+app.UseDefaultFiles();
+app.UseStaticFiles(staticFileOptions);
+
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Ferre Link Manager API");
 app.MapAuthEndpoints();
 app.MapCategoryEndpoints();
 app.MapLinkEndpoints();
 app.MapUserManagementEndpoints();
 app.MapAuditEndpoints();
+
+// An unknown API address must answer 404, not the Angular page.
+app.MapFallback("/api/{**path}", () => Results.NotFound());
+
+// Any other address that is not a file is an Angular page (for example /verify-email): serve the app.
+app.MapFallbackToFile("index.html", staticFileOptions);
 
 app.Run();
 
