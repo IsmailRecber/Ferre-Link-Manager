@@ -8,6 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterLink } from '@angular/router';
 import { getErrorCodes, toMessages } from '../../../core/api/api-errors';
 import { AuthService } from '../../../core/auth/auth.service';
+import { Brand } from '../../../shared/brand/brand';
 import { passwordRules } from '../password-rules';
 
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -24,6 +25,7 @@ const matchesPassword: ValidatorFn = (control) =>
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
+    Brand,
   ],
   templateUrl: './register.html',
 })

@@ -4,12 +4,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { getErrorCodes } from '../../../core/api/api-errors';
 import { AuthService } from '../../../core/auth/auth.service';
+import { Brand } from '../../../shared/brand/brand';
 
 type VerifyStatus = 'checking' | 'success' | 'failed' | 'retry';
 
 @Component({
   selector: 'app-verify-email',
-  imports: [RouterLink, MatButtonModule, MatProgressBarModule],
+  imports: [RouterLink, MatButtonModule, MatProgressBarModule, Brand],
   templateUrl: './verify-email.html',
 })
 export class VerifyEmail implements OnInit {

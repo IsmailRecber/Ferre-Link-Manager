@@ -7,6 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router, RouterLink } from '@angular/router';
 import { getErrorCodes, toMessages } from '../../../core/api/api-errors';
 import { AuthService } from '../../../core/auth/auth.service';
+import { Brand } from '../../../shared/brand/brand';
 
 // The API sends one e-mail per address per minute, so the button waits as long.
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -20,6 +21,7 @@ const RESEND_COOLDOWN_SECONDS = 60;
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
+    Brand,
   ],
   templateUrl: './login.html',
 })

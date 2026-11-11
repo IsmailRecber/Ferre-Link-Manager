@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { Brand } from '../../shared/brand/brand';
 
 @Component({
   selector: 'app-not-found',
-  imports: [RouterLink, MatButtonModule],
+  imports: [RouterLink, MatButtonModule, Brand],
   template: `
     <main class="auth-page">
       <section class="auth-card">
         <div class="auth-brand">
-          <span class="auth-logo">F</span>
-          <span class="auth-brand-name">Ferre Link Manager</span>
+          <app-brand size="large" />
         </div>
 
         <h1>Sayfa bulunamadı</h1>

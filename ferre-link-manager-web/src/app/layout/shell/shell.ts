@@ -4,6 +4,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { Brand } from '../../shared/brand/brand';
 import { ConfirmService } from '../../shared/confirm/confirm.service';
 
 @Component({
@@ -15,6 +16,7 @@ import { ConfirmService } from '../../shared/confirm/confirm.service';
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
+    Brand,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
