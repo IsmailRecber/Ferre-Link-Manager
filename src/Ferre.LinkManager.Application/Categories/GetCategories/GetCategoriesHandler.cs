@@ -12,8 +12,6 @@ public sealed class GetCategoriesHandler
         _db = db;
     }
 
-    // Deleted categories and deleted links are hidden by the global query filter.
-    // Inactive categories and inactive links are included (admin view).
     public async Task<IReadOnlyList<CategoryDto>> HandleAsync(CancellationToken cancellationToken)
     {
         var categories = await _db.Categories

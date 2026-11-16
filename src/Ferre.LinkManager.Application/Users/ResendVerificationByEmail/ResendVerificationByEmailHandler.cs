@@ -19,8 +19,6 @@ public sealed class ResendVerificationByEmailHandler
         _sendHandler = sendHandler;
     }
 
-    // Only a malformed request is reported. Whether an account exists is never revealed:
-    // an unknown, confirmed or inactive account completes silently, exactly like a pending one.
     public async Task HandleAsync(ResendVerificationByEmailCommand command, CancellationToken cancellationToken)
     {
         var email = command.Email?.Trim();

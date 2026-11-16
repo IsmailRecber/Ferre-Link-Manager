@@ -19,7 +19,6 @@ public sealed class SetLinkActiveHandler
         var link = await _linkRepository.GetByIdAsync(command.Id, cancellationToken)
             ?? throw new NotFoundException($"Link '{command.Id}' was not found.");
 
-        // Nothing to change, so nothing to save.
         if (link.IsActive == command.IsActive)
         {
             return;

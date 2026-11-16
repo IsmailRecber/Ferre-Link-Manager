@@ -24,7 +24,6 @@ public sealed class GetMyLinksHandler
             return Array.Empty<LinkDto>();
         }
 
-        // Admins see every active link. Other roles see only the links that were given to them.
         var seesEverything = roles.Contains(Roles.Admin, StringComparer.OrdinalIgnoreCase);
 
         return await (

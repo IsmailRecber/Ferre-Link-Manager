@@ -14,10 +14,7 @@ public sealed class GetLinkRedirectHandler
         _db = db;
     }
 
-    /// <summary>
-    /// Returns the stored destination of a link the caller is allowed to open.
-    /// Every failure is reported as "not found" so the existence of a link is never revealed.
-    /// </summary>
+   
     public async Task<string> HandleAsync(GetLinkRedirectQuery query, CancellationToken cancellationToken)
     {
         var roles = query.Roles.ToArray();
@@ -27,7 +24,6 @@ public sealed class GetLinkRedirectHandler
             throw new NotFoundException("Link was not found.");
         }
 
-        // Admins may open every active link. Other roles only the links that were given to them.
         var seesEverything = roles.Contains(Roles.Admin, StringComparer.OrdinalIgnoreCase);
 
         var url = await (
@@ -46,7 +42,6 @@ public sealed class GetLinkRedirectHandler
             throw new NotFoundException("Link was not found.");
         }
 
-        // Defense in depth: the domain already validates the URL, but never redirect to anything but HTTP(S).
         if (!Uri.TryCreate(url.Value, UriKind.Absolute, out var uri)
             || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
         {

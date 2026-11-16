@@ -12,7 +12,6 @@ public sealed class GetAllLinksHandler
         _db = db;
     }
 
-    // Admin view: inactive links are included. Deleted ones are hidden by the global query filter.
     public async Task<IReadOnlyList<AdminLinkDto>> HandleAsync(CancellationToken cancellationToken)
     {
         return await (

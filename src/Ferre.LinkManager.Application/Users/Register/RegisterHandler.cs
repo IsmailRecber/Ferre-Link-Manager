@@ -48,8 +48,7 @@ public sealed class RegisterHandler
             throw new ValidationException(result.ErrorCodes);
         }
 
-        // The user is already saved. If the listener (e-mail sending) fails, the user stays registered
-        // and can ask for a new verification e-mail.
+
         await _eventPublisher.PublishAsync(new UserRegistered(result.UserId.Value, email!), cancellationToken);
 
         return new RegisterResponse(result.UserId.Value);
